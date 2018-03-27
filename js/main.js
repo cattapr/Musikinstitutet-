@@ -43,7 +43,6 @@ fetch('https://folksa.ga/api/artists?key=flat_eric',{
 });
 
 
-
 //Create album with artist ID 
 //under construction
 let album = {
