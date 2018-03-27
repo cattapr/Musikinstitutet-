@@ -43,4 +43,29 @@ fetch('https://folksa.ga/api/artists?key=flat_eric',{
 });
 
 
+
+//Create album with artist ID 
+//under construction
+let album = {
+    title: "Goodbye and Hello",
+    artists: "5aae2d13b9791d0344d8f717", //Can be multiple IDs, must be comma separated string if multiple
+    releaseDate: 1967,
+    genres: "Folk rock, Psychedelic Rock", //Must be a comma separated string
+    spotifyURL: "https://open.spotify.com/album/1jKfTvT64lcQwA74WmkKiJ?si=nmdUZ2UpS4uUknUrGX1smg",
+    coverImage: "https://upload.wikimedia.org/wikipedia/en/thumb/0/02/Tim_Buckley_-_Goodbye_And_Hello.jpg/220px-Tim_Buckley_-_Goodbye_And_Hello.jpg"
+}
+
+fetch('https://folksa.ga/api/albums',{
+    method: 'POST',
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(album)
+  })
+  .then((response) => response.json())
+  .then((album) => {
+    console.log(album);
+  });
+
  
