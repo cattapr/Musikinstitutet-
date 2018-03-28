@@ -28,14 +28,23 @@ function displayArtists(artists){
   }
 }
 
+
+
+
+
+
 function logInfo(element) {
+
+
 
   console.group("Button properties");
   console.log('id:', element.id);
   console.log('class:', element.className);
 
+
+ //skapar album
   let album = {
-    title: "Thriller",
+    title: "Loca",
     artists: element.id, //Can be multiple IDs, must be comma separated string if multiple
     releaseDate: 1967,
     genres: "Folk rock, Psychedelic Rock", //Must be a comma separated string
@@ -43,6 +52,9 @@ function logInfo(element) {
     coverImage: "https://upload.wikimedia.org/wikipedia/en/thumb/0/02/Tim_Buckley_-_Goodbye_And_Hello.jpg/220px-Tim_Buckley_-_Goodbye_And_Hello.jpg"
 }
 
+console.log(album);
+
+//skickar album
 fetch('https://folksa.ga/api/albums?key=flat_eric',{
     method: 'POST',
     headers: {
@@ -52,20 +64,24 @@ fetch('https://folksa.ga/api/albums?key=flat_eric',{
     body: JSON.stringify(album)
   })
   .then((response) => response.json())
-  .then((album) => {
+  .then((albums) => {
     console.log(album);
   });
+
+ //hämtar album
+  fetch('https://folksa.ga/api/albums?key=flat_eric')
+  .then((response) => response.json())
+  .then((albums) => {
+    console.log('Albums:', albums);
+  });
+
+
+
+
 
 
   console.groupEnd();
 }
-
-
-  fetch('https://folksa.ga/api/albums?key=flat_eric')
-  .then((response) => response.json())
-  .then((albums) => {
-    console.log(albums);
-  });
 
 
 
