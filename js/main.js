@@ -1,141 +1,144 @@
-function fetchArtists(){
-  // Always returns a promise
-  fetch('https://folksa.ga/api/artists?key=flat_eric')
-    .then((response) => response.json())
-    .then((artists) => {
-      displayArtists(artists);
-      console.log(artists);
-    })
+function fetchArtists() {
+    // Always returns a promise
+    fetch('https://folksa.ga/api/artists?key=flat_eric&limit=200')
+        .then((response) => response.json())
+        .then((artists) => {
+            console.log(artists);
+            isTrue(artists);
+        })
 }
 
 fetchArtists();
 
-function displayArtists(artists){
-  const artistList = document.getElementById('artists');
-  for(let artist of artists){
-    let button = document.createElement('button');
-    button.id = artist._id; 
-    button.dataset.id = artist._id;
-    button.innerText = artist.name;
-    button.classList.add('button'); 
-    // button.addEventListener('click', logInfo);
+function isTrue(artists) {
+    const button = document.getElementById('button');
     button.addEventListener('click', function() {
-      this.dataset.id;
-      this.innerText;
-      logInfo(this);
-    });
-    artistList.appendChild(button);
-  }
-}
+        let inputValue = document.getElementById('name').value;
+        let genreValue = document.getElementById('genre').value;
+
+        for (var i = 0; i < artists.length; i++) {
+            var id = artists[i]._id;
+            var nameOfArtist = artists[i].name;
+            id = nameOfArtist;
+
+
+            if (id == inputValue) {
+                console.log("Artist already exists", id);
+            } else {
+                console.log("not match");
+            }
+        }
+
+         createArtist(inputValue, genreValue);
+
+    }); //end of click function
+
+};
+
+function createArtist(inputValue, genreValue) {
+            let artist = {
+                name: inputValue,
+                gender: "other",
+                genres: genreValue, //Must be a comma separated string
+                spotifyURL: "https://open.spotify.com/artist/6zHRqvws8dVeqL8D31ponr?si=QFWoLwwBTa-KrR3gUcLMYQ",
+                coverImage: "https://img.discogs.com/D7eDvyQrOJIJlDX-ieliD0QmAG4=/500x500/smart/filters:strip_icc():format(jpeg):mode_rgb():quality(90)/discogs-images/A-71872-1426020311-7115.jpeg.jpg"
+            }
+ 
+            postArtist(artist);
+
+        }
 
 
 
+        function postArtist(artist) {
+            fetch('https://folksa.ga/api/artists?key=flat_eric', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(artist)
+                })
+                .then((response) => response.json())
+                .then((artist) => {
+                    console.log(artist);
+                   updateArtists();
+
+                });
+
+        } //end of postArtists
 
 
+     
 
-function logInfo(element) {
+function updateArtists(){
+  fetch('https://folksa.ga/api/artists?key=flat_eric&sort=asc&limit=200')
+        .then((response) => response.json())
+        .then((artists) => {
+            console.log('update:', artists);
+            displayArtists(artists);
+        });
+};
+    
 
+    function displayArtists(artists) {
+        const artistList = document.getElementById('artists');
+        for (let artist of artists) {
 
-
-  console.group("Button properties");
-  console.log('id:', element.id);
-  console.log('class:', element.className);
-
-
- //skapar album
-  let album = {
-    title: "Loca",
-    artists: element.id, //Can be multiple IDs, must be comma separated string if multiple
-    releaseDate: 1967,
-    genres: "Folk rock, Psychedelic Rock", //Must be a comma separated string
-    spotifyURL: "https://open.spotify.com/album/1jKfTvT64lcQwA74WmkKiJ?si=nmdUZ2UpS4uUknUrGX1smg",
-    coverImage: "https://upload.wikimedia.org/wikipedia/en/thumb/0/02/Tim_Buckley_-_Goodbye_And_Hello.jpg/220px-Tim_Buckley_-_Goodbye_And_Hello.jpg"
-}
-
-console.log(album);
-
-//skickar album
-fetch('https://folksa.ga/api/albums?key=flat_eric',{
-    method: 'POST',
-    headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(album)
-  })
-  .then((response) => response.json())
-  .then((albums) => {
-    console.log(album);
-  });
-
- //hämtar album
-  fetch('https://folksa.ga/api/albums?key=flat_eric')
-  .then((response) => response.json())
-  .then((albums) => {
-    console.log('Albums:', albums);
-  });
+            let button = document.createElement('button');
+            button.id = artist._id;
+            button.dataset.id = artist._id;
+            button.innerText = artist.name;
+            button.classList.add('button');
+            // button.addEventListener('click', logInfo);
+            button.addEventListener('click', function() {
+                this.dataset.id;
+                this.innerText;
+                logInfo(this);
+            });
+            artistList.appendChild(button);
+        }
+    };
 
 
+    function logInfo(element) {
+        console.group("Button properties");
+        console.log('id:', element.id);
+        console.log('class:', element.className);
 
 
+        //skapar album
+        let album = {
+            title: "Loca",
+            artists: element.id, //Can be multiple IDs, must be comma separated string if multiple
+            releaseDate: 1967,
+            genres: "Folk rock, Psychedelic Rock", //Must be a comma separated string
+            spotifyURL: "https://open.spotify.com/album/1jKfTvT64lcQwA74WmkKiJ?si=nmdUZ2UpS4uUknUrGX1smg",
+            coverImage: "https://upload.wikimedia.org/wikipedia/en/thumb/0/02/Tim_Buckley_-_Goodbye_And_Hello.jpg/220px-Tim_Buckley_-_Goodbye_And_Hello.jpg"
+        }
 
+        //skickar album
+        fetch('https://folksa.ga/api/albums?key=flat_eric', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(album)
+            })
 
-  console.groupEnd();
-}
+            .then((response) => response.json())
+            .then((albums) => {
+                console.log(album);
+            });
 
+        console.groupEnd();
 
+        //hämtar album
+        fetch('https://folksa.ga/api/albums?key=flat_eric')
+            .then((response) => response.json())
+            .then((albums) => {
+                console.log('Albums:', albums);
+            });
 
-
-
-fetch('https://folksa.ga/api/artists?key=flat_eric')
-  .then((response) => response.json())
-  .then((artists) => {
-    console.log(artists);
-  });
-
-  
-  const button = document.getElementById('button');
-
- button.addEventListener('click', function(){
-  let inputValue = document.getElementById('name').value;
-  let genreValue = document.getElementById('genre').value;
-  let spotifyValue = document.getElementById('spotify').value;
-  let imageValue = document.getElementById('image').value; 
-  /*let gender = document.getElementById('female').checked; 
-  gender = document.getElementById('male').checked;
-  gender = document.getElementById('other').checked;*/
-
-
-   let artist = {
-    name: inputValue,
-    gender: gender,
-    genres: genreValue,//"Folk,Rock", //Must be a comma separated string
-    spotifyURL: spotifyValue, //"https://open.spotify.com/artist/6zHRqvws8dVeqL8D31ponr?si=QFWoLwwBTa-KrR3gUcLMYQ",
-    coverImage: imageValue//"https://img.discogs.com/D7eDvyQrOJIJlDX-ieliD0QmAG4=/500x500/smart/filters:strip_icc():format(jpeg):mode_rgb():quality(90)/discogs-images/A-71872-1426020311-7115.jpeg.jpg"
-}
-
-
-
-fetch('https://folksa.ga/api/artists?key=flat_eric',{
-    method: 'POST',
-    headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(artist)
-  })
-  .then((response) => response.json())
-  .then((artist) => {
-    console.log(artist);
-  });
-
-});
-
-
-//Create album with artist ID 
-//under construction
-
-
-
-
-
+    };
