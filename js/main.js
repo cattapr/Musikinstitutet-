@@ -5,6 +5,7 @@ function fetchArtists() {
         .then((artists) => {
             console.log(artists);
             isTrue(artists);
+            displayArtists(artists);
         })
 }
 
@@ -76,7 +77,6 @@ function updateArtists(){
         .then((response) => response.json())
         .then((artists) => {
             console.log('update:', artists);
-            displayArtists(artists);
         });
 };
     
@@ -117,7 +117,7 @@ for (let artist of artists) {
          for (i = 0; i < li.length; i++) {
     
         if (li[i].innerText.toUpperCase().indexOf(filter) > -1) {
-            li[i].style.display = "";
+            li[i].style.display = "block";
         } else {
             li[i].style.display = "none";
 
