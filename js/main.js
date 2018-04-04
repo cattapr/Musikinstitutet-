@@ -81,19 +81,15 @@ function updateArtists(){
 };
     
 
-const input = document.getElementById("myInput");
-    input.addEventListener('keyup', displayArtists);
 
-function displayArtists(artists) {    
-var filer, ul,li,i;   
-       filter = input.value.toUpperCase();
-        const artistList = document.getElementById('artists');
- ul = document.createElement('ul');
+
+function displayArtists(artists) { 
+
+for (let artist of artists) {
+
+            const artistList = document.getElementById('artists');
+ 			ul = document.getElementById('ul');
             li = document.createElement('li');
-
-        for (let artist of artists) {
-
-           
             li.id = artist._id;
             li.dataset.id = artist._id;
             li.innerText = artist.name;
@@ -108,10 +104,19 @@ var filer, ul,li,i;
             ul.appendChild(li);
         }
 
+ input = document.getElementById("myInput");
+    input.addEventListener('keyup', function() {
+
+ var filter, ul, li, i;
+   
+    filter = input.value.toUpperCase();
+
+        ul = document.getElementById("ul");
+    li = ul.getElementsByTagName("li");
 
          for (i = 0; i < li.length; i++) {
     
-        if (li[i].innertext.toUpperCase().indexOf(filter) > -1) {
+        if (li[i].innerText.toUpperCase().indexOf(filter) > -1) {
             li[i].style.display = "";
         } else {
             li[i].style.display = "none";
@@ -119,7 +124,8 @@ var filer, ul,li,i;
         }
     }
 
-    };
+    });
+};
 
 
     function logInfo(element) {
