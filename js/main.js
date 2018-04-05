@@ -4,20 +4,28 @@ function fetchArtists() {
         .then((response) => response.json())
         .then((artists) => {
             console.log(artists);
-            isTrue(artists);
+            //isTrue(artists);
             displayArtists(artists);
         })
 }
 
 fetchArtists();
 
-function isTrue(artists) {
-    const button = document.getElementById('button');
-    button.addEventListener('click', function() {
-        let inputValue = document.getElementById('name').value;
-        let genreValue = document.getElementById('genre').value;
+//function isTrue(artists) {
+    
+    function getinputName() {
+       let getinputName = document.getElementById('name').value;
+       return getinputName;
 
-        for (var i = 0; i < artists.length; i++) {
+   }
+
+ function getinputGenre() {
+       let getinputGenre = document.getElementById('genre').value;
+       return getinputGenre;
+
+   }
+
+    /*    for (var i = 0; i < artists.length; i++) {
             var id = artists[i]._id;
             var nameOfArtist = artists[i].name;
             id = nameOfArtist;
@@ -34,13 +42,14 @@ function isTrue(artists) {
 
     }); //end of click function
 
-};
+};*/
 
-function createArtist(inputValue, genreValue) {
+const button = document.getElementById('button');
+button.onclick = function createArtist() {
     let artist = {
-        name: inputValue,
+        name: getinputName(),
         gender: "other",
-        genres: genreValue, //Must be a comma separated string
+        genres: getinputGenre(), //Must be a comma separated string
         spotifyURL: "https://open.spotify.com/artist/6zHRqvws8dVeqL8D31ponr?si=QFWoLwwBTa-KrR3gUcLMYQ",
         coverImage: "https://img.discogs.com/D7eDvyQrOJIJlDX-ieliD0QmAG4=/500x500/smart/filters:strip_icc():format(jpeg):mode_rgb():quality(90)/discogs-images/A-71872-1426020311-7115.jpeg.jpg"
     }
@@ -139,10 +148,9 @@ function displayArtists(artists) {
 
 function logInfo(element) {
 
-	
+
     const addAlbumDiv = document.getElementById('addAlbum');
-    let albumTitle = document.getElementById('input');
-    let value = albumTitle.value;
+ 
 
 
     let albumButton = document.getElementById('albumButton');
@@ -150,8 +158,8 @@ function logInfo(element) {
 
     albumButton.id = element.id;
     albumButton.dataset.id = element.id;
-  
-   
+
+
 
 
     console.group("Button properties");
@@ -162,7 +170,7 @@ function logInfo(element) {
 
     //skapar album
 
- /*   let album = {
+    /*   let album = {
         title: albumTitle,
         artists: element.id, //Can be multiple IDs, must be comma separated string if multiple
         releaseDate: 1967,
@@ -171,24 +179,32 @@ function logInfo(element) {
         coverImage: "https://upload.wikimedia.org/wikipedia/en/thumb/0/02/Tim_Buckley_-_Goodbye_And_Hello.jpg/220px-Tim_Buckley_-_Goodbye_And_Hello.jpg"
     }
 */
-    createAlbum (element, value, albumButton);
+    createAlbum(element, value, albumButton);
 
 }
 
 
 
-function getAlbum(){
-fetch('https://folksa.ga/api/albums?key=flat_eric')
-  .then((response) => response.json())
-  .then((albums) => {
-    console.log(albums);
-    
-  });
+function getAlbum() {
+    fetch('https://folksa.ga/api/albums?key=flat_eric')
+        .then((response) => response.json())
+        .then((albums) => {
+            console.log(albums);
+
+        });
 };
 
 getAlbum();
 
-function createAlbum (element, value, albumButton){
+
+
+
+function postAlbum(album, albumButton) {
+    //skickar album
+    albumButton.onclick = function() {
+    	   const albumTitle = document.getElementById('input');
+    let value = albumTitle.value;
+    function createAlbum(element, value, albumButton) {
 
     let album = {
         title: value,
@@ -199,15 +215,11 @@ function createAlbum (element, value, albumButton){
         coverImage: "https://upload.wikimedia.org/wikipedia/en/thumb/0/02/Tim_Buckley_-_Goodbye_And_Hello.jpg/220px-Tim_Buckley_-_Goodbye_And_Hello.jpg"
     }
 
-postAlbum(album, albumButton);
+    postAlbum(album, albumButton);
 
 
 }
 
-
-function postAlbum(album, albumButton) {
-    //skickar album
-    albumButton.onclick = function() {
         fetch('https://folksa.ga/api/albums?key=flat_eric', {
                 method: 'POST',
                 headers: {
@@ -233,3 +245,29 @@ function postAlbum(album, albumButton) {
 
     };
 };
+
+
+//get tracks
+
+function getTracks(){
+	fetch('https://folksa.ga/api/tracks?key=flat_eric')
+  .then((response) => response.json())
+  .then((tracks) => {
+    console.log('tracks:', tracks);
+  });
+}
+
+getTracks();
+
+
+//get playlists 
+
+function getplaylist(){
+	fetch('https://folksa.ga/api/playlists?key=flat_eric')
+  .then((response) => response.json())
+  .then((playlists) => {
+    console.log('playlist:', playlists);
+  });
+}
+
+getplaylist();
