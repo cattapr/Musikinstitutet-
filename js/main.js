@@ -93,11 +93,11 @@ function displayArtists(artists) {
         ul = document.getElementById('ul');
         li = document.createElement('li');
         a = document.createElement('a');
-        a.href = "artistprofile.html";
+        a.href = "#";
         a.id = artist._id;
         a.dataset.id = artist._id;
         li.innerText = artist.name;
-        li.classList.add('li');
+        li.classList.add('button');
         // button.addEventListener('click', logInfo);
         a.addEventListener('click', function() {
             this.dataset.id;
@@ -137,6 +137,23 @@ function displayArtists(artists) {
 };
 
 	function logInfo(element) {
+	const addAlbumDiv = document.getElementById('addAlbum');
+	let albumTitle = document.createElement('input');
+	albumTitle.setAttribute("type", "text");
+	let value = albumTitle.value;
+   
+	let albumButton = document.createElement('button');
+	const addButton = document.createElement('h1');
+	
+		albumButton.id = element.id;
+        albumButton.dataset.id = element.id;
+        addButton.innerText = "Add album +";
+
+        addAlbumDiv.appendChild(albumTitle);
+        addAlbumDiv.appendChild(albumButton);
+        albumButton.appendChild(addButton);
+
+
     console.group("Button properties");
     console.log('id:', element.id);
     console.log('class:', element.className);
@@ -144,7 +161,7 @@ function displayArtists(artists) {
 
     //skapar album
     let album = {
-        title: "Thriller",
+        title: value,
         artists: element.id, //Can be multiple IDs, must be comma separated string if multiple
         releaseDate: 1967,
         genres: "Folk rock, Psychedelic Rock", //Must be a comma separated string
@@ -152,7 +169,13 @@ function displayArtists(artists) {
         coverImage: "https://upload.wikimedia.org/wikipedia/en/thumb/0/02/Tim_Buckley_-_Goodbye_And_Hello.jpg/220px-Tim_Buckley_-_Goodbye_And_Hello.jpg"
     }
 
+postAlbum(album,albumButton);
+
+}
+
+function postAlbum(album,albumButton){
     //skickar album
+    albumButton.onclick = function(){
     fetch('https://folksa.ga/api/albums?key=flat_eric', {
             method: 'POST',
             headers: {
@@ -175,4 +198,6 @@ function displayArtists(artists) {
         .then((albums) => {
             console.log('Albums:', albums);
         });
+
+    };
 };
