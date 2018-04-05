@@ -4,7 +4,7 @@ function fetchArtists() {
         .then((response) => response.json())
         .then((artists) => {
             console.log(artists);
-            //isTrue(artists);
+            checkIfArtistExists(artists);
             displayArtists(artists);
         })
 }
@@ -25,27 +25,29 @@ fetchArtists();
 
    }
 
-    /*    for (var i = 0; i < artists.length; i++) {
+
+function checkIfArtistExists(artists){
+    	   for (var i = 0; i < artists.length; i++) {
             var id = artists[i]._id;
             var nameOfArtist = artists[i].name;
             id = nameOfArtist;
 
 
-            if (id == inputValue) {
+            if (id ==  getinputName()) {
                 console.log("Artist already exists", id);
             } else {
                 console.log("not match");
             }
         }
+       };
 
-        createArtist(inputValue, genreValue);
 
-    }); //end of click function
-
-};*/
 
 const button = document.getElementById('button');
 button.onclick = function createArtist() {
+
+
+
     let artist = {
         name: getinputName(),
         gender: "other",
