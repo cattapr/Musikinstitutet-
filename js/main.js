@@ -136,22 +136,22 @@ function displayArtists(artists) {
     });
 };
 
-	function logInfo(element) {
-	const addAlbumDiv = document.getElementById('addAlbum');
-	let albumTitle = document.createElement('input');
-	albumTitle.setAttribute("type", "text");
-	let value = albumTitle.value;
-   
-	let albumButton = document.createElement('button');
-	const addButton = document.createElement('h1');
-	
-		albumButton.id = element.id;
-        albumButton.dataset.id = element.id;
-        addButton.innerText = "Add album +";
+function logInfo(element) {
+    const addAlbumDiv = document.getElementById('addAlbum');
+    let albumTitle = document.createElement('input');
+    albumTitle.setAttribute("type", "text");
+    let value = albumTitle.value;
 
-        addAlbumDiv.appendChild(albumTitle);
-        addAlbumDiv.appendChild(albumButton);
-        albumButton.appendChild(addButton);
+    let albumButton = document.createElement('button');
+
+
+    albumButton.id = element.id;
+    albumButton.dataset.id = element.id;
+    albumButton.innerText = "Add album +";
+
+    addAlbumDiv.appendChild(albumTitle);
+    addAlbumDiv.appendChild(albumButton);
+   
 
 
     console.group("Button properties");
@@ -169,35 +169,35 @@ function displayArtists(artists) {
         coverImage: "https://upload.wikimedia.org/wikipedia/en/thumb/0/02/Tim_Buckley_-_Goodbye_And_Hello.jpg/220px-Tim_Buckley_-_Goodbye_And_Hello.jpg"
     }
 
-postAlbum(album,albumButton);
+    postAlbum(album, albumButton);
 
 }
 
-function postAlbum(album,albumButton){
+function postAlbum(album, albumButton) {
     //skickar album
-    albumButton.onclick = function(){
-    fetch('https://folksa.ga/api/albums?key=flat_eric', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(album)
-        })
+    albumButton.onclick = function() {
+        fetch('https://folksa.ga/api/albums?key=flat_eric', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(album)
+            })
 
-        .then((response) => response.json())
-        .then((albums) => {
-            console.log(album);
-        });
+            .then((response) => response.json())
+            .then((albums) => {
+                console.log(album);
+            });
 
-    console.groupEnd();
+        console.groupEnd();
 
-    //hämtar album
-    fetch('https://folksa.ga/api/albums?key=flat_eric')
-        .then((response) => response.json())
-        .then((albums) => {
-            console.log('Albums:', albums);
-        });
+        //hämtar album
+        fetch('https://folksa.ga/api/albums?key=flat_eric')
+            .then((response) => response.json())
+            .then((albums) => {
+                console.log('Albums:', albums);
+            });
 
     };
 };
