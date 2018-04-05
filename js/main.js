@@ -100,6 +100,7 @@ function displayArtists(artists) {
         li.classList.add('button');
         // button.addEventListener('click', logInfo);
         a.addEventListener('click', function() {
+
             this.dataset.id;
             this.innerText;
             logInfo(this);
@@ -137,29 +138,58 @@ function displayArtists(artists) {
 };
 
 function logInfo(element) {
+
+	
     const addAlbumDiv = document.getElementById('addAlbum');
-    let albumTitle = document.createElement('input');
-    albumTitle.setAttribute("type", "text");
+    let albumTitle = document.getElementById('input');
     let value = albumTitle.value;
 
-    let albumButton = document.createElement('button');
+
+    let albumButton = document.getElementById('albumButton');
 
 
     albumButton.id = element.id;
     albumButton.dataset.id = element.id;
-    albumButton.innerText = "Add album +";
-
-    addAlbumDiv.appendChild(albumTitle);
-    addAlbumDiv.appendChild(albumButton);
+  
    
 
 
     console.group("Button properties");
+    console.log('albumtitle:', value);
     console.log('id:', element.id);
     console.log('class:', element.className);
 
 
     //skapar album
+
+ /*   let album = {
+        title: albumTitle,
+        artists: element.id, //Can be multiple IDs, must be comma separated string if multiple
+        releaseDate: 1967,
+        genres: "Folk rock, Psychedelic Rock", //Must be a comma separated string
+        spotifyURL: "https://open.spotify.com/album/1jKfTvT64lcQwA74WmkKiJ?si=nmdUZ2UpS4uUknUrGX1smg",
+        coverImage: "https://upload.wikimedia.org/wikipedia/en/thumb/0/02/Tim_Buckley_-_Goodbye_And_Hello.jpg/220px-Tim_Buckley_-_Goodbye_And_Hello.jpg"
+    }
+*/
+    createAlbum (element, value, albumButton);
+
+}
+
+
+
+function getAlbum(){
+fetch('https://folksa.ga/api/albums?key=flat_eric')
+  .then((response) => response.json())
+  .then((albums) => {
+    console.log(albums);
+    
+  });
+};
+
+getAlbum();
+
+function createAlbum (element, value, albumButton){
+
     let album = {
         title: value,
         artists: element.id, //Can be multiple IDs, must be comma separated string if multiple
@@ -169,9 +199,11 @@ function logInfo(element) {
         coverImage: "https://upload.wikimedia.org/wikipedia/en/thumb/0/02/Tim_Buckley_-_Goodbye_And_Hello.jpg/220px-Tim_Buckley_-_Goodbye_And_Hello.jpg"
     }
 
-    postAlbum(album, albumButton);
+postAlbum(album, albumButton);
+
 
 }
+
 
 function postAlbum(album, albumButton) {
     //skickar album
