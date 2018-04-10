@@ -8,17 +8,18 @@
 </head>
 <body>
 	
-	<form>    
+	    
         <h2>Add artist</h2>
 	    <label>Artist name</label>
 		<input type="text" id="name" placeholder="Artist name">
 		<label>Genre</label>
 		<input type="text" id="genre" placeholder="genre">
 		<input type="submit" id="submitButton" value="Submit">
-	</form>
+	
     
     <h2>Search artist</h2>
 	<input type="text" id="myInput" placeholder="Search for names.." title="Type in artist name">
+	<div id="deleteAnArtist"></div>
 	<div id="artists">
 		<ul id="ul"></ul>
 	</div>
@@ -47,14 +48,25 @@
 	    <label>Playlist name</label>
 	   <input type="text" id="createdPlaylist" placeholder="Title of the playlist">
 	   <input type="text" id="createdBy" placeholder="Created By">
-	   <button id="playlistButton">Add playlist +</button>
-	    
+	   <button id="playlistButton">Add playlist +</button>    
+	</div>
+
+	<div id="playlistContainer">
+		<ul id="playList"></ul>
+		<button id="showAllplaylists">Show all playlists</button>
 	</div>
 	
     <div id="trackContainer">
 		<ul id="trackList"></ul>
 		<button id="showAllTracks">Show all tracks</button>
 	</div>
+
+	<div id="albumContainer">
+		<ul id="albumList"></ul>
+		<button id="showAllAlbums">Show all albums</button>
+	</div>
+
+
 	
 	<script src="js/main.js"></script>
 </body>

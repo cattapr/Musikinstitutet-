@@ -113,11 +113,14 @@ function displayArtistList(artists) {
             this.dataset.id;
             this.innerText;
             addAlbumToArtistId(this);
+            deleteAnArtist(this);
+
         });
 
         artistList.appendChild(ul);
         ul.appendChild(li);
         li.appendChild(clickOnArtist);
+
     } //End of loop
 
     const input = document.getElementById("myInput");
@@ -136,13 +139,38 @@ function displayArtistList(artists) {
                 }
             } //End of loop
         })
+  
 }; //End of displayArtistList()
+
+function deleteAnArtist(element){
+
+    const deleteArtistDiv = document.getElementById('deleteAnArtist');
+    const deleteButton = document.createElement('button');
+    deleteButton.innerText = 'Delete this artist';
+
+    deleteArtistDiv.appendChild(deleteButton);
+
+    deleteButton.onclick = function(){
+    fetch(`https://folksa.ga/api/artists/${element.id}?key=flat_eric`, {
+    method: 'DELETE',
+    headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    })
+  .then((response) => response.json())
+  .then((artist) => {
+    console.log(artist);
+  });
+};
+  };
 
 function getAlbums() {
     fetch('https://folksa.ga/api/albums?key=flat_eric')
         .then((response) => response.json())
         .then((albums) => {
             console.log(albums);
+            displayAlbumList(albums);
         });
 }; getAlbums();
 
@@ -219,6 +247,7 @@ function createAlbum(addAlbumButton, albumButton) {
             .then((response) => response.json())
             .then((albums) => {
                 console.log('Albums:', albums);
+                
             });
 
     };
@@ -261,6 +290,7 @@ function getplaylist(){
   .then((response) => response.json())
   .then((playlists) => {
     console.log('playlist:', playlists);
+    displayPlayLists(playlists);
   });
 }
 
@@ -304,30 +334,7 @@ function getinputCreatedBy() {
 
 }
 
-const addPlaylistButton = document.getElementById('playlistButton');
-    addPlaylistButton.onclick = function createPlaylist() {
-        let playlist = {
-        title: getinputPlaylist(),
-        genres: "Folk, Folk Rock",
-        createdBy: getinputCreatedBy(),
-        tracks: "5aae2d13b9791d0344d8f717,5aae2e6fb9791d0344d8f71c",
-        coverImage: "https://www.internetmuseum.se/wordpress/wp-content/uploads/compisknappar-504x329.jpg",
-        coverImageColor: "#000"
-    }
 
-    fetch('https://folksa.ga/api/playlists?key=flat_eric',{
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(playlist)
-      })
-      .then((response) => response.json())
-      .then((playlist) => {
-        console.log(playlist);
-      });
-};
 
 
 
@@ -359,5 +366,84 @@ showAllTracks.addEventListener('click', function(){
 }; //End of displayTracksList()
 
 function addTrackToPlaylist(songTrack) {
-    console.log(songTrack.title);
+    console.log('hello:', songTrack.id);
+    let song = songTrack.id;
+  
+        const addPlaylistButton = document.getElementById('playlistButton');
+        addPlaylistButton.onclick = function createPlaylist() {
+        let playlist = {
+        title: getinputPlaylist(),
+        genres: "Folk, Folk Rock",
+        createdBy: getinputCreatedBy(),
+        tracks: song,
+        coverImage: "https://www.internetmuseum.se/wordpress/wp-content/uploads/compisknappar-504x329.jpg",
+        coverImageColor: "#000"
+    }
+
+    fetch('https://folksa.ga/api/playlists?key=flat_eric',{
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(playlist)
+      })
+      .then((response) => response.json())
+      .then((playlist) => {
+        console.log(playlist);
+      });
+};
+    
 }
+
+
+function displayAlbumList(albums) {
+const showAllAlbums = document.getElementById("showAllAlbums");
+showAllAlbums.addEventListener('click', function(){
+    for (let album of albums) {
+        const albumContainer = document.getElementById('trackContainer');
+        const ul = document.getElementById('albumList');
+        const li = document.createElement('li');
+        const clickOnAlbum = document.createElement('button');
+        clickOnAlbum.id = album._id;
+        clickOnAlbum.dataset.id = album._id;
+        clickOnAlbum.innerText = album.title;
+        li.classList.add('albumContainer');
+        clickOnAlbum.addEventListener('click', function() {
+            this.dataset.id;
+            this.innerText;
+           // addTrackToPlaylist(this);
+        });
+
+        albumContainer.appendChild(ul);
+        ul.appendChild(li);
+        li.appendChild(clickOnAlbum);
+    } //End of loop
+})
+};
+
+function displayPlayLists(playlists) {
+const showAllplaylists = document.getElementById("showAllplaylists");
+showAllplaylists.addEventListener('click', function(){
+    for (let playlist of playlists) {
+        const playlistContainer = document.getElementById('playlistContainer');
+        const ul = document.getElementById('playList');
+        const li = document.createElement('li');
+        const clickOnPlaylist = document.createElement('button');
+        clickOnPlaylist.id = playlist._id;
+        clickOnPlaylist.dataset.id = playlist._id;
+        clickOnPlaylist.innerText = playlist.title;
+        li.classList.add('playlistContainer');
+        clickOnPlaylist.addEventListener('click', function() {
+            this.dataset.id;
+            this.innerText;
+           // addTrackToPlaylist(this);
+        });
+
+        playlistContainer.appendChild(ul);
+        ul.appendChild(li);
+        li.appendChild(clickOnPlaylist);
+    } //End of loop
+})
+};
+
