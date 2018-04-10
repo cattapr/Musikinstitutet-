@@ -401,7 +401,7 @@ function displayAlbumList(albums) {
 const showAllAlbums = document.getElementById("showAllAlbums");
 showAllAlbums.addEventListener('click', function(){
     for (let album of albums) {
-        const albumContainer = document.getElementById('trackContainer');
+        const albumContainer = document.getElementById('albumContainer');
         const ul = document.getElementById('albumList');
         const li = document.createElement('li');
         const clickOnAlbum = document.createElement('button');
