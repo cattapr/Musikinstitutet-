@@ -31,7 +31,7 @@ fetchArtists();
 
 
 function checkIfArtistExists(artists) {
-    	   for (var i = 0; i < artists.length; i++) {
+           for (var i = 0; i < artists.length; i++) {
             var id = artists[i]._id;
             var nameOfArtist = artists[i].name;
             id = nameOfArtist;
@@ -127,15 +127,15 @@ function displayArtistList(artists) {
         ul = document.getElementById("ul");
         li = ul.getElementsByTagName("li");
 
-	        for (i = 0; i < li.length; i++) {
-	            if (li[i].innerText.toUpperCase().indexOf(filter) > -1) {
-	                li[i].style.display = "block";
-	            } else {
-	                li[i].style.display = "none";
+            for (i = 0; i < li.length; i++) {
+                if (li[i].innerText.toUpperCase().indexOf(filter) > -1) {
+                    li[i].style.display = "block";
+                } else {
+                    li[i].style.display = "none";
 
-	            }
-	        } //End of loop
-    	})
+                }
+            } //End of loop
+        })
 }; //End of displayArtistList()
 
 function getAlbums() {
@@ -147,8 +147,8 @@ function getAlbums() {
 }; getAlbums();
 
 function addAlbumToArtistId(element) {
-	const addAlbumDiv = document.getElementById('addAlbum');
-	let addAlbumButton = document.getElementById('albumButton');
+    const addAlbumDiv = document.getElementById('addAlbum');
+    let addAlbumButton = document.getElementById('albumButton');
     let albumButton = document.getElementById('albumButton');
     albumButton.id = element.id;
     albumButton.dataset.id = element.id;
@@ -164,39 +164,39 @@ function addAlbumToArtistId(element) {
 
 
    function albumTitle() {
-	 let albumTitle = document.getElementById('albumTitle').value;
-	 return albumTitle;
+     let albumTitle = document.getElementById('albumTitle').value;
+     return albumTitle;
 }
 
   function albumReleaseDate() {
-	 let albumReleaseDate = document.getElementById('albumRelease').value;
-	 return albumReleaseDate;
+     let albumReleaseDate = document.getElementById('albumRelease').value;
+     return albumReleaseDate;
 }
 
   function albumGenre() {
-	 let albumGenre = document.getElementById('albumGenre').value;
-	 return albumGenre;
+     let albumGenre = document.getElementById('albumGenre').value;
+     return albumGenre;
 }
 
   function albumTrack() {
-	 let albumTrack = document.getElementById('albumTrack').value;
-	 return albumTrack;
+     let albumTrack = document.getElementById('albumTrack').value;
+     return albumTrack;
 }
 
 
 
 function createAlbum(addAlbumButton, albumButton) {
 
-	addAlbumButton.onclick = function() {
+    addAlbumButton.onclick = function() {
 
-	    let album = {
-	        title: albumTitle(),
-	        artists: albumButton.id, //Can be multiple IDs, must be comma separated string if multiple
-	        releaseDate: albumReleaseDate(),
-	        genres: albumGenre(), //Must be a comma separated string
-	        spotifyURL: "https://open.spotify.com/album/1jKfTvT64lcQwA74WmkKiJ?si=nmdUZ2UpS4uUknUrGX1smg",
-	        coverImage: "https://upload.wikimedia.org/wikipedia/en/thumb/0/02/Tim_Buckley_-_Goodbye_And_Hello.jpg/220px-Tim_Buckley_-_Goodbye_And_Hello.jpg"
-	    }
+        let album = {
+            title: albumTitle(),
+            artists: albumButton.id, //Can be multiple IDs, must be comma separated string if multiple
+            releaseDate: albumReleaseDate(),
+            genres: albumGenre(), //Must be a comma separated string
+            spotifyURL: "https://open.spotify.com/album/1jKfTvT64lcQwA74WmkKiJ?si=nmdUZ2UpS4uUknUrGX1smg",
+            coverImage: "https://upload.wikimedia.org/wikipedia/en/thumb/0/02/Tim_Buckley_-_Goodbye_And_Hello.jpg/220px-Tim_Buckley_-_Goodbye_And_Hello.jpg"
+        }
     
          fetch('https://folksa.ga/api/albums?key=flat_eric', {
                 method: 'POST',
@@ -227,9 +227,9 @@ function createAlbum(addAlbumButton, albumButton) {
 
  function getAlbumId(albums){
 
-		let albumId = albums._id;
-		console.log(albumId);
-		return albumId;
+        let albumId = albums._id;
+        console.log(albumId);
+        return albumId;
 }
 
 function getArtistId(albums){
@@ -243,9 +243,10 @@ function getArtistId(albums){
 //get tracks
 
 function getTracks(){
-	fetch('https://folksa.ga/api/tracks?key=flat_eric')
+    fetch('https://folksa.ga/api/tracks?key=flat_eric')
   .then((response) => response.json())
   .then((tracks) => {
+    displayTracksList(tracks);    
     console.log('tracks:', tracks);
   });
 }
@@ -256,7 +257,7 @@ getTracks();
 //get playlists 
 
 function getplaylist(){
-	fetch('https://folksa.ga/api/playlists?key=flat_eric')
+    fetch('https://folksa.ga/api/playlists?key=flat_eric')
   .then((response) => response.json())
   .then((playlists) => {
     console.log('playlist:', playlists);
@@ -289,41 +290,74 @@ trackButton.onclick = function postTracks() {
         console.log('One track:', postedTrack);
         console.log('hej');
       });
-   
 }
 
  function getinputPlaylist() {
        let getinputPlaylist = document.getElementById('createdPlaylist').value;
        return getinputPlaylist;
 
-   }
+}
 
 function getinputCreatedBy() {
        let getinputCreatedBy = document.getElementById('createdBy').value;
        return getinputCreatedBy;
 
-   }
-const addPlaylistButton = document.getElementById('playlistButton');
-addPlaylistButton.onclick = function createPlaylist() {
-    let playlist = {
-    title: getinputPlaylist(),
-    genres: "Folk, Folk Rock",
-    createdBy: getinputCreatedBy(),
-    tracks: "5aae2d13b9791d0344d8f717,5aae2e6fb9791d0344d8f71c",
-    coverImage: "https://www.internetmuseum.se/wordpress/wp-content/uploads/compisknappar-504x329.jpg",
-    coverImageColor: "#000"
 }
 
-fetch('https://folksa.ga/api/playlists?key=flat_eric',{
-    method: 'POST',
-    headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(playlist)
-  })
-  .then((response) => response.json())
-  .then((playlist) => {
-    console.log(playlist);
-  });
+const addPlaylistButton = document.getElementById('playlistButton');
+    addPlaylistButton.onclick = function createPlaylist() {
+        let playlist = {
+        title: getinputPlaylist(),
+        genres: "Folk, Folk Rock",
+        createdBy: getinputCreatedBy(),
+        tracks: "5aae2d13b9791d0344d8f717,5aae2e6fb9791d0344d8f71c",
+        coverImage: "https://www.internetmuseum.se/wordpress/wp-content/uploads/compisknappar-504x329.jpg",
+        coverImageColor: "#000"
+    }
+
+    fetch('https://folksa.ga/api/playlists?key=flat_eric',{
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(playlist)
+      })
+      .then((response) => response.json())
+      .then((playlist) => {
+        console.log(playlist);
+      });
 };
+
+
+
+function displayTracksList(tracks) {
+const showAllTracks = document.getElementById("showAllTracks");
+showAllTracks.addEventListener('click', function(){
+    for (let track of tracks) {
+        const trackContainer = document.getElementById('trackContainer');
+        const ul = document.getElementById('trackList');
+        const li = document.createElement('li');
+        const clickOnTrack = document.createElement('button');
+        clickOnTrack.id = track._id;
+        clickOnTrack.dataset.id = track._id;
+        clickOnTrack.innerText = track.title;
+        li.classList.add('trackContainer');
+        clickOnTrack.addEventListener('click', function() {
+            this.dataset.id;
+            this.innerText;
+            addTrackToPlaylist(this);
+        });
+
+        trackContainer.appendChild(ul);
+        ul.appendChild(li);
+        li.appendChild(clickOnTrack);
+    } //End of loop
+})
+        
+   
+}; //End of displayTracksList()
+
+function addTrackToPlaylist(songTrack) {
+    console.log(songTrack.title);
+}
