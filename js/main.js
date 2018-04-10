@@ -1,3 +1,6 @@
+let selectedArtist = '';
+let selectedAlbum = '';
+
 function fetchArtists() {
     // Always returns a promise
     fetch('https://folksa.ga/api/artists?key=flat_eric&limit=200')
@@ -175,6 +178,11 @@ function addAlbumToArtistId(element) {
 	 return albumGenre;
 }
 
+  function albumTrack() {
+	 let albumTrack = document.getElementById('albumTrack').value;
+	 return albumTrack;
+}
+
 
 
 function createAlbum(addAlbumButton, albumButton) {
@@ -202,7 +210,8 @@ function createAlbum(addAlbumButton, albumButton) {
             .then((response) => response.json())
             .then((albums) => {
                 console.log('New album:' , albums);
-                getAlbumId(albums);
+                selectedAlbum = getAlbumId(albums);
+                selectedArtist = getArtistId(albums);
             });
 
         //hämtar album
@@ -218,12 +227,15 @@ function createAlbum(addAlbumButton, albumButton) {
 
  function getAlbumId(albums){
 
-	function albumId(){
 		let albumId = albums._id;
 		console.log(albumId);
 		return albumId;
-	} albumId();
+}
 
+function getArtistId(albums){
+        let artistId = albums.artists.join(',');
+        console.log(artistId);
+        return artistId;
 }
 
 
@@ -255,26 +267,63 @@ getplaylist();
 
 
 //Post tracks
-
-/*function postTracks() {
-let track = {
-    title: "Pleasant Street",
-    artists: "5aba44ba7396550e47352c97" // Must be a string with comma separated values
-    album: getAlbumId(),   // Must be a string with comma separated values
-    genres: "Folk,Rock"
+let trackButton = document.getElementById('trackButton');
+trackButton.onclick = function postTracks() {
+    let track = {
+        title: albumTrack(),
+        artists: selectedArtist, // Must be a string with comma separated values
+        album: selectedAlbum,   // Must be a string with comma separated values
+        genres: "Folk,Rock"
+    }
+    console.log(track);
+    fetch('https://folksa.ga/api/tracks?key=flat_eric',{
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(track)
+      })
+      .then((response) => response.json())
+      .then((postedTrack) => {
+        console.log('One track:', postedTrack);
+        console.log('hej');
+      });
+   
 }
 
-fetch('https://folksa.ga/api/tracks',{
+ function getinputPlaylist() {
+       let getinputPlaylist = document.getElementById('createdPlaylist').value;
+       return getinputPlaylist;
+
+   }
+
+function getinputCreatedBy() {
+       let getinputCreatedBy = document.getElementById('createdBy').value;
+       return getinputCreatedBy;
+
+   }
+const addPlaylistButton = document.getElementById('playlistButton');
+addPlaylistButton.onclick = function createPlaylist() {
+    let playlist = {
+    title: getinputPlaylist(),
+    genres: "Folk, Folk Rock",
+    createdBy: getinputCreatedBy(),
+    tracks: "5aae2d13b9791d0344d8f717,5aae2e6fb9791d0344d8f71c",
+    coverImage: "https://www.internetmuseum.se/wordpress/wp-content/uploads/compisknappar-504x329.jpg",
+    coverImageColor: "#000"
+}
+
+fetch('https://folksa.ga/api/playlists?key=flat_eric',{
     method: 'POST',
     headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
     },
-    body: JSON.stringify(track);
+    body: JSON.stringify(playlist)
   })
   .then((response) => response.json())
-  .then((postedTrack) => {
-    console.log(postedTrack);
+  .then((playlist) => {
+    console.log(playlist);
   });
-
-};*/
+};
