@@ -28,7 +28,7 @@ const FetchModel = {
     },
 
     fetchTracks(){
-        return fetch('https://folksa.ga/api/tracks?key=flat_eric&limit=10')
+        return fetch('https://folksa.ga/api/tracks?key=flat_eric&limit=1000')
            .then((response) => response.json())
            .then((tracks) => {
                View.displayTracksList(tracks);    
@@ -460,7 +460,7 @@ const View = {
                 clickOnPlaylist.addEventListener('click', function() {
                     this.dataset.id;
                     this.innerText;
-                    addTrackToPlaylist(this);
+                    View.addTrackToPlaylist(this);
                 });
 
                 playlistContainer.appendChild(ul);
