@@ -1,6 +1,7 @@
 //Global variables
 let selectedArtist = '';
 let selectedAlbum = '';
+let selectTrack = '';
 
 
 
@@ -175,14 +176,14 @@ const Controller = {
          }
     },
 
-   registerTrackToPlaylistClickHandler(song){
+   registerTrackToPlaylistClickHandler(selectTrack){
         let addPlaylistButton = View.addPlaylist;
          addPlaylistButton.onclick = function createPlaylist() {
                 let playlist = {
-                    title: View.getinputPlaylist(),
+                    title: View.getinputPlaylist() || selectTrack.innerText,
                     genres: "Folk, Folk Rock",
-                    createdBy: View.getinputCreatedBy(),
-                    tracks: song,
+                    createdBy: View.getinputCreatedBy() || selectTrack.createdBy,
+                    tracks: selectTrack,
                     coverImage: "https://www.internetmuseum.se/wordpress/wp-content/uploads/compisknappar-504x329.jpg",
                     coverImageColor: "#000"
                 }
@@ -366,7 +367,7 @@ const View = {
     },
     
 
-    addAlbumToArtistId(element) {
+     addAlbumToArtistId(element) {
         const addAlbumDiv = document.getElementById('addAlbum');
         const albumButton = document.getElementById('albumButton');
         albumButton.id = element.id;
@@ -394,10 +395,12 @@ const View = {
                 clickOnTrack.id = track._id;
                 clickOnTrack.dataset.id = track._id;
                 clickOnTrack.innerText = track.title;
+                clickOnTrack.trackId = track._id;
                 li.classList.add('trackContainer');
                 clickOnTrack.addEventListener('click', function() {
                     this.dataset.id;
                     this.innerText;
+                    this.trackId;
                     View.addTrackToPlaylist(this);
                 });
 
@@ -410,12 +413,15 @@ const View = {
 
     addPlaylist: document.getElementById('playlistButton'),
 
-    addTrackToPlaylist(songTrack) {
-        console.log('hello:', songTrack.id);
-        let song = songTrack.id;
-        console.log(song);
+    addTrackToPlaylist(song) {
+        console.log('Playlist id:', song.id);
 
-        Controller.registerTrackToPlaylistClickHandler(song);    
+        console.log('Songtrack id:', song.trackId);
+
+        selectTrack = song.trackId;
+       
+
+        Controller.registerTrackToPlaylistClickHandler(selectTrack);    
     },
 
 
@@ -470,11 +476,16 @@ const View = {
                 clickOnPlaylist.id = playlist._id;
                 clickOnPlaylist.dataset.id = playlist._id;
                 clickOnPlaylist.innerText = playlist.title;
+                clickOnPlaylist.createdBy = playlist.createdBy;     
+                clickOnPlaylist.trackId = selectTrack;
+
                 li.classList.add('playlistContainer');
                 clickOnPlaylist.addEventListener('click', function() {
+                    this.trackId;
                     this.dataset.id;
                     this.innerText;
                     View.addTrackToPlaylist(this);
+                    Controller.registerTrackToPlaylistClickHandler(this)
 
                     
                 });
