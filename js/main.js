@@ -162,12 +162,12 @@ const Controller = {
 
     trackButton: document.getElementById('trackButton'),
 
-    registerCreateTrackClickHandler() {
+    registerTrackToAlbumClickHandler(album, artist) {
         trackButton.onclick = function createTrack() {
             let track = {
                 title: View.albumTrack(),
-                artists: selectedArtist, // Must be a string with comma separated values
-                album: selectedAlbum,   // Must be a string with comma separated values
+                artists: artist.join(','), // Must be a string with comma separated values
+                album: album,   // Must be a string with comma separated values
                 genres: "Folk,Rock"
             }
             console.log(track); 
@@ -243,7 +243,6 @@ const postModel = {
        .then((response) => response.json())
        .then((postedTrack) => {
             console.log('One track:', postedTrack);
-            console.log('hekkkj');
         })
     },
 
@@ -418,6 +417,7 @@ const View = {
         Controller.registerTrackToPlaylistClickHandler(song);    
     },
 
+
     showAllAlbums: document.getElementById("showAllAlbums"),
 
     displayAlbumList(albums) {
@@ -430,11 +430,13 @@ const View = {
                 clickOnAlbum.id = album._id;
                 clickOnAlbum.dataset.id = album._id;
                 clickOnAlbum.innerText = album.title;
+                clickOnAlbum.artistId = album.artists;
                 li.classList.add('albumContainer');
                 clickOnAlbum.addEventListener('click', function() {
                     this.dataset.id;
+                    this.artistId;
                     this.innerText;
-                    //View.addTrackToAlbum(this);
+                    View.registerAlbumId(this);
                 });
 
                 albumContainer.appendChild(ul);
@@ -442,6 +444,17 @@ const View = {
                 li.appendChild(clickOnAlbum);
             } //End of loop
         })
+    },
+
+
+    registerAlbumId(albumId) {
+        console.log('Album Id:', albumId.id);
+        console.log('Artist Id of clicked album:', albumId.artistId);
+
+        let album = albumId.id;
+        let artist = albumId.artistId;
+     
+        Controller.registerTrackToAlbumClickHandler(album, artist);    
     },
 
     showAllplaylists: document.getElementById("showAllplaylists"),
@@ -477,5 +490,5 @@ FetchModel.fetchAlbums();
 FetchModel.fetchTracks();
 FetchModel.fetchPlaylist();
 Controller.registerCreateArtistClickHandler();
-Controller. registerCreateTrackClickHandler();
+
 
