@@ -70,6 +70,7 @@ const FetchModel = {
         })
     },
 
+
 };
 
 
@@ -78,7 +79,7 @@ const FetchModel = {
 
 const deleteDataModel = {
 
-     registerDeleteArtistClickHandler(artistID) {
+     deleteArtist(artistID) {
         return fetch(`https://folksa.ga/api/artists/${artistID}?key=flat_eric`, {
             method: 'DELETE',
             headers: {
@@ -93,9 +94,8 @@ const deleteDataModel = {
         },
 
 
-   /* registerDeleteAlbumClickHandler(Album, deleteButton){
-        deleteButton.onclick = function deleteAlbum(){
-            return fetch(`https://folksa.ga/api/albums/${Album.id}?key=flat_eric`, {
+    deleteAlbum(albumID){
+            return fetch(`https://folksa.ga/api/albums/${albumID}?key=flat_eric`, {
                     method: 'DELETE',
                     headers: {
                         'Accept': 'application/json',
@@ -107,8 +107,42 @@ const deleteDataModel = {
                     console.log(album);
                   });
 
-        }
-    },*/
+        
+    },
+
+     deleteTrack(trackID){
+            return fetch(`https://folksa.ga/api/tracks/${trackID}?key=flat_eric`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                  })
+                  .then((response) => response.json())
+                  .then((track) => {
+                    console.log(track);
+                  });
+
+        
+    },
+
+     deletePlaylist(playlistID){
+        return fetch(`https://folksa.ga/api/playlists/${playlistID}?key=flat_eric`, {
+                method: 'DELETE',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+              })
+              .then((response) => response.json())
+              .then((playlist) => {
+                console.log(playlist);
+              });
+
+    
+    },
+
+
 };
 
 
@@ -396,7 +430,7 @@ const View = {
             });
 
             deleteButton.addEventListener('click', function(){
-                deleteDataModel.registerDeleteArtistClickHandler(clickOnArtist.id);
+                deleteDataModel.deleteArtist(clickOnArtist.id);
 
             });
 
@@ -436,6 +470,8 @@ const View = {
                 const ul = document.getElementById('trackList');
                 const li = document.createElement('li');
                 const clickOnTrack = document.createElement('button');
+                const deleteTrack = document.createElement('button');
+                deleteTrack.innerText = 'Delete Track';
                 clickOnTrack.id = track._id;
                 clickOnTrack.dataset.id = track._id;
                 clickOnTrack.innerText = track.title;
@@ -448,9 +484,14 @@ const View = {
                     View.addTrackToPlaylist(this);
                 });
 
+                deleteTrack.addEventListener('click', function(){
+                    deleteDataModel.deleteTrack(clickOnTrack.id);
+                });
+
                 trackContainer.appendChild(ul);
                 ul.appendChild(li);
                 li.appendChild(clickOnTrack);
+                li.appendChild(deleteTrack);
             } //End of loop
         })  
     },
@@ -476,6 +517,10 @@ const View = {
                 const ul = document.getElementById('albumList');
                 const li = document.createElement('li');
                 const clickOnAlbum = document.createElement('button');
+                const deleteAlbum = document.createElement('button');
+                const updateAlbum = document.createElement('button');
+                updateAlbum.innerText = 'Update Album'; 
+                deleteAlbum.innerText ='Delete Album';
                 clickOnAlbum.id = album._id;
                 clickOnAlbum.dataset.id = album._id;
                 clickOnAlbum.innerText = album.title;
@@ -488,9 +533,15 @@ const View = {
                     View.registerAlbumId(this);
                 });
 
+                deleteAlbum.addEventListener('click', function() {
+                    deleteDataModel.deleteAlbum(clickOnAlbum.id);
+                });
+
                 albumContainer.appendChild(ul);
                 ul.appendChild(li);
                 li.appendChild(clickOnAlbum);
+                li.appendChild(deleteAlbum);
+                li.appendChild(updateAlbum);
             } //End of loop
         })
     },
@@ -515,6 +566,10 @@ const View = {
                 const ul = document.getElementById('playList');
                 const li = document.createElement('li');
                 const clickOnPlaylist = document.createElement('button');
+                const deletePlaylist = document.createElement('button');
+                const updatePlaylist = document.createElement('button');
+                updatePlaylist.innerText = 'Update Playlist'; 
+                deletePlaylist.innerText ='Delete Playlist';
                 clickOnPlaylist.id = playlist._id;
                 clickOnPlaylist.dataset.id = playlist._id;
                 clickOnPlaylist.innerText = playlist.title;
@@ -532,9 +587,16 @@ const View = {
              
                 });
 
+                deletePlaylist.addEventListener('click', function() {
+                    deleteDataModel.deletePlaylist(clickOnPlaylist.id);
+                });
+
                 playlistContainer.appendChild(ul);
                 ul.appendChild(li);
                 li.appendChild(clickOnPlaylist);
+                li.appendChild(deletePlaylist);
+                li.appendChild(updatePlaylist);
+
             } //End of loop
         })
     },
