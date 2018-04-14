@@ -474,6 +474,8 @@ const View = {
                     this.dataset.id;
                     this.innerText;
                     View.addTrackToPlaylist(this);
+
+                    
                 });
 
                 playlistContainer.appendChild(ul);
