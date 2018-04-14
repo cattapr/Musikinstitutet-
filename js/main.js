@@ -413,6 +413,7 @@ const View = {
     addTrackToPlaylist(songTrack) {
         console.log('hello:', songTrack.id);
         let song = songTrack.id;
+        console.log(song);
 
         Controller.registerTrackToPlaylistClickHandler(song);    
     },
