@@ -78,9 +78,8 @@ const FetchModel = {
 
 const deleteDataModel = {
 
-     registerDeleteArtistClickHandler(Artist, deleteButton) {
-        deleteButton.onclick = function deleteArtist(){
-        return fetch(`https://folksa.ga/api/artists/${Artist.id}?key=flat_eric`, {
+     registerDeleteArtistClickHandler(artistID) {
+        return fetch(`https://folksa.ga/api/artists/${artistID}?key=flat_eric`, {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',
@@ -91,8 +90,25 @@ const deleteDataModel = {
             .then((artist) => {
                 console.log(artist);
             });
+        },
+
+
+   /* registerDeleteAlbumClickHandler(Album, deleteButton){
+        deleteButton.onclick = function deleteAlbum(){
+            return fetch(`https://folksa.ga/api/albums/${Album.id}?key=flat_eric`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                  })
+                  .then((response) => response.json())
+                  .then((album) => {
+                    console.log(album);
+                  });
+
         }
-    },
+    },*/
 };
 
 
@@ -364,6 +380,10 @@ const View = {
             const artistList = document.getElementById('artists');
             const ul = document.getElementById('ul');
             const li = document.createElement('li');
+            const deleteButton = document.createElement('button');
+            deleteButton.innerText = 'Delete';
+            const addToAlbum = document.createElement('button');
+            addToAlbum.innerText = 'Add to album';
             const clickOnArtist = document.createElement('button');
             clickOnArtist.id = artist._id;
             clickOnArtist.dataset.id = artist._id;
@@ -373,28 +393,23 @@ const View = {
                 this.dataset.id;
                 this.innerText;
                 View.addAlbumToArtistId(this);
-                View.deleteAnArtist(this);
+            });
+
+            deleteButton.addEventListener('click', function(){
+                deleteDataModel.registerDeleteArtistClickHandler(clickOnArtist.id);
+
             });
 
             artistList.appendChild(ul);
             ul.appendChild(li);
             li.appendChild(clickOnArtist);
+            li.appendChild(deleteButton);
+            li.appendChild(addToAlbum);
 
         } //End of loop
          View.filterArtists();
     },
  
-
-    deleteAnArtist(artistId){
-        const deleteArtistDiv = document.getElementById('deleteAnArtist');
-        const deleteButton = document.createElement('button');
-        let Artist = artistId;
-        deleteButton.innerText = 'Delete this artist';
-        deleteArtistDiv.appendChild(deleteButton);
-        
-        deleteDataModel.registerDeleteArtistClickHandler(Artist, deleteButton);    
-    },
-    
 
      addAlbumToArtistId(element) {
         const addAlbumDiv = document.getElementById('addAlbum');
