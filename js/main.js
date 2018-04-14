@@ -176,14 +176,14 @@ const Controller = {
          }
     },
 
-   registerTrackToPlaylistClickHandler(selectTrack){
+   registerTrackToPlaylistClickHandler(song){
         let addPlaylistButton = View.addPlaylist;
          addPlaylistButton.onclick = function createPlaylist() {
                 let playlist = {
-                    title: View.getinputPlaylist() || selectTrack.innerText,
+                    title: View.getinputPlaylist(),
                     genres: "Folk, Folk Rock",
-                    createdBy: View.getinputCreatedBy() || selectTrack.createdBy,
-                    tracks: selectTrack,
+                    createdBy: View.getinputCreatedBy(),
+                    tracks: song,
                     coverImage: "https://www.internetmuseum.se/wordpress/wp-content/uploads/compisknappar-504x329.jpg",
                     coverImageColor: "#000"
                 }
@@ -191,6 +191,35 @@ const Controller = {
                 postModel.postPlaylist(playlist);
         }
     },
+
+    trackArray(playlistID) {
+
+        let tracks = selectTrack;
+        let playlist = playlistID.dataset.id;
+
+        Controller.postTrackToPlaylist(playlist, tracks);
+        console.log('Innehåller den id?' , tracks);
+    },
+
+     postTrackToPlaylist (playlist, tracks) { 
+        return fetch(`https://folksa.ga/api/playlists/${playlist}/tracks?key=flat_eric`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ tracks: tracks })
+          })
+
+          .then((response) => response.json())
+          .then((playlist) => {
+            console.log('new track to playlist:', playlist);
+
+
+          });
+
+        }
+
 };
 
 
@@ -419,9 +448,7 @@ const View = {
         console.log('Songtrack id:', song.trackId);
 
         selectTrack = song.trackId;
-       
 
-        Controller.registerTrackToPlaylistClickHandler(selectTrack);    
     },
 
 
@@ -485,9 +512,9 @@ const View = {
                     this.dataset.id;
                     this.innerText;
                     View.addTrackToPlaylist(this);
-                    Controller.registerTrackToPlaylistClickHandler(this)
 
-                    
+                    Controller.trackArray(this);  
+             
                 });
 
                 playlistContainer.appendChild(ul);
