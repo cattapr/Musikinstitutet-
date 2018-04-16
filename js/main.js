@@ -2,6 +2,7 @@
 let selectedArtist = '';
 let selectedAlbum = '';
 let selectTrack = '';
+let commentValue = '';
 
 
 
@@ -44,7 +45,15 @@ const FetchModel = {
                console.log('playlist:', playlists);
                View.displayPlayLists(playlists);
         })
-    },
+    }
+    
+//    fetchComments(){
+//        return fetch(`https://folksa.ga/api/comments?key=flat_eric&limit=1000`)
+//            .then((response) => response.json())
+//            .then((comments) => {
+//                console.log('All comments: ', comments);
+//            });
+//    }
 
 };
 
@@ -305,6 +314,34 @@ const postModel = {
         .then((playlist) => {
             console.log(playlist);
         })
+    },
+    
+      getPlaylistComment(playlistID){
+          let playlistid = playlistID;
+          
+          let comment = {
+          playlist: playlistid,
+          body: commentValue,
+          username: "The commenter"
+        }
+          
+         postModel.postCommentToPlaylist(playlistid, comment)
+      },
+    
+    
+    postCommentToPlaylist(playlistid, comment) {
+        return fetch(`https://folksa.ga/api/playlists/${playlistid}/comments?key=flat_eric`,{
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(comment)
+        })
+        .then((response) => response.json())
+        .then((playlist) => {
+        console.log(playlist);
+      });
     }
 };
 
@@ -353,6 +390,7 @@ const View = {
        return getinputCreatedBy;
 
     },
+    
 
     input: document.getElementById("myInput"),
 
@@ -514,6 +552,15 @@ const View = {
                 const playlistContainer = document.getElementById('playlistContainer');
                 const ul = document.getElementById('playList');
                 const li = document.createElement('li');
+                
+                let inputComment = document.createElement('input');
+                inputComment.setAttribute('type', 'text');
+                //inputComment.setAttribute('value', `${commentValue}`); // `${commentValue}`
+              
+                const inputButton = document.createElement('button');
+                inputButton.innerText = "Comment";
+                
+                //let playlistComment = inputComment.value;
                 const clickOnPlaylist = document.createElement('button');
                 clickOnPlaylist.id = playlist._id;
                 clickOnPlaylist.dataset.id = playlist._id;
@@ -531,10 +578,19 @@ const View = {
                     Controller.trackArray(this);  
              
                 });
+                
+                inputButton.addEventListener('click', function(){
+                    commentValue = inputComment.value
+                    postModel.getPlaylistComment(clickOnPlaylist.dataset.id);
+                });
 
                 playlistContainer.appendChild(ul);
                 ul.appendChild(li);
                 li.appendChild(clickOnPlaylist);
+                li.appendChild(inputComment);
+                li.appendChild(inputButton);
+               
+                
             } //End of loop
         })
     },
