@@ -3,6 +3,7 @@ let selectedArtist = '';
 let selectedAlbum = '';
 let selectTrack = '';
 let commentValue = '';
+let ratingValue = '';
 
 
 
@@ -39,25 +40,32 @@ const FetchModel = {
     },
 
     fetchPlaylist(){
-        return fetch('https://folksa.ga/api/playlists?key=flat_eric&limit=10')
+        return fetch('https://folksa.ga/api/playlists?key=flat_eric&limit=1000')
            .then((response) => response.json())
            .then((playlists) => {
                console.log('playlist:', playlists);
                View.displayPlayLists(playlists);
         })
-    }
+    },
     
-//    fetchComments(){
-//        return fetch(`https://folksa.ga/api/comments?key=flat_eric&limit=1000`)
-//            .then((response) => response.json())
-//            .then((comments) => {
-//                console.log('All comments: ', comments);
-//            });
-//    }
+    fetchComments(){
+        return fetch(`https://folksa.ga/api/comments?key=flat_eric&limit=1000`)
+            .then((response) => response.json())
+            .then((comments) => {
+                console.log('All comments: ', comments);
+            });
+    },
+    
+    fetchCommentsforSpecifikPlaylist(playlistID){
+        let playlist = playlistID.id;
+        return fetch(`https://folksa.ga/api/playlists/${playlist}/comments?key=flat_eric`)
+            .then((response) => response.json())
+            .then((comments) => {
+                  View.getCommentofPlaylist(comments);
+        });
+   } //functionen ska kallas någonstans
 
 };
-
-
 
     const updateModel = {
 
@@ -78,12 +86,63 @@ const FetchModel = {
                 View.displayArtistList(artists);
         })
     },
+        
+    changeAlbumTitle(album){
+        let updates = {
+          title: changedAlbumTitle,
+        }
+
+        let albumID = album;
+        console.log(updates, albumID);
+        updateModel.updateAspecifikAlbum(albumID, updates);
+
+    },
+
+    updateAspecifikAlbum(albumID, updates){
+        return fetch(`https://folksa.ga/api/albums/${albumID}?key=flat_eric`,
+          {
+            method: 'PATCH',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updates)
+          })
+          .then((response) => response.json())
+          .then((album) => {
+            console.log('Update album Title:', album);
+          });
+    },
+
+     changePlaylistTitle(playlist){
+        let updates = {
+          title: changedPlaylistTitle,
+        }
+
+        let playlistID = playlist;
+        console.log(updates, playlistID);
+        updateModel.updateAspecifikPlaylist(playlistID, updates);
+
+    },
+
+    updateAspecifikPlaylist(playlistID, updates){
+        return fetch(`https://folksa.ga/api/playlists/${playlistID}?key=flat_eric`,
+          {
+            method: 'PATCH',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updates)
+          })
+          .then((response) => response.json())
+          .then((playlist) => {
+            console.log('Update playlist Title:', playlist);
+          });
+    }    
 
 
 };
-
-
-
 
 
 const deleteDataModel = {
@@ -150,7 +209,21 @@ const deleteDataModel = {
 
     
     },
+    
+    deleteAcomment(commentID){
+      return fetch(`https://folksa.ga/api/comments/${commentID}?key=flat_eric`, {
+            method: 'DELETE',
+            headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+            },
 
+            })
+            .then((response) => response.json())
+            .then((comment) => {
+                console.log(comment);
+            });
+    }
 
 };
 
@@ -235,14 +308,14 @@ const Controller = {
          }
     },
 
-   registerTrackToPlaylistClickHandler(song){
+   registerTrackToPlaylistClickHandler(){
         let addPlaylistButton = View.addPlaylist;
          addPlaylistButton.onclick = function createPlaylist() {
                 let playlist = {
                     title: View.getinputPlaylist(),
                     genres: "Folk, Folk Rock",
                     createdBy: View.getinputCreatedBy(),
-                    tracks: song,
+                    tracks: selectTrack,
                     coverImage: "https://www.internetmuseum.se/wordpress/wp-content/uploads/compisknappar-504x329.jpg",
                     coverImageColor: "#000"
                 }
@@ -376,6 +449,27 @@ const postModel = {
         .then((playlist) => {
         console.log(playlist);
       });
+    },
+    
+    playlistRating(playlist) {
+        let playlistID = playlist; 
+        let vote = ratingValue;
+        postModel.voteOnPlaylist(playlistID, vote);
+    },
+
+   voteOnPlaylist(playlistID, vote){
+        return fetch(`https://folksa.ga/api/playlists/${playlistID}/vote?key=flat_eric`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ rating: vote })
+        })
+        .then((response) => response.json())
+        .then((playlist) => {
+            console.log(playlist);
+        });
     }
 };
 
@@ -557,6 +651,8 @@ const View = {
                 const clickOnAlbum = document.createElement('button');
                 const deleteAlbum = document.createElement('button');
                 const updateAlbum = document.createElement('button');
+                let inputChangeAlbumTitle = document.createElement('input');
+                    inputChangeAlbumTitle.setAttribute('type', 'text');
                 updateAlbum.innerText = 'Update Album'; 
                 deleteAlbum.innerText ='Delete Album';
                 clickOnAlbum.id = album._id;
@@ -574,12 +670,19 @@ const View = {
                 deleteAlbum.addEventListener('click', function() {
                     deleteDataModel.deleteAlbum(clickOnAlbum.id);
                 });
+                
+                updateAlbum.addEventListener('click', function() {
+                    changedAlbumTitle = inputChangeAlbumTitle.value;
+                    updateModel.changeAlbumTitle(clickOnAlbum.id);
+                });
 
                 albumContainer.appendChild(ul);
                 ul.appendChild(li);
                 li.appendChild(clickOnAlbum);
                 li.appendChild(deleteAlbum);
                 li.appendChild(updateAlbum);
+                li.appendChild(inputChangeAlbumTitle);
+
             } //End of loop
         })
     },
@@ -597,43 +700,88 @@ const View = {
 
     showAllplaylists: document.getElementById("showAllplaylists"),
 
-    displayPlayLists(playlists) {
-        showAllplaylists.addEventListener('click', function(){
+     displayPlayLists(playlists) {
+        
+        const playlistContainer = document.getElementById('playlistContainer');
+        const table = document.createElement('table');
+        table.className = "tablePlaylist";
+        playlistContainer.appendChild(table);
+        
+        let thPlaylist = document.createElement('th');
+        thPlaylist.innerText = 'Playlist';
+        
+        let thCreatedBy = document.createElement('th');
+        thCreatedBy.innerText = 'Created by';
+        
+        let thRating = document.createElement('th');
+        thRating.innerText = 'Rating';
+        
+        let thShowMore = document.createElement('th');
+        thShowMore.innerText = 'Show more';
+        
+        table.appendChild(thPlaylist);
+        table.appendChild(thCreatedBy);
+        table.appendChild(thRating);
+        table.appendChild(thShowMore);
+        
+
+        
+        //showAllplaylists.addEventListener('click', function(){
             for (let playlist of playlists) {
                 const playlistContainer = document.getElementById('playlistContainer');
-                const ul = document.getElementById('playList');
-                const li = document.createElement('li');
+//              const ul = document.getElementById('playList');
+//                const li = document.createElement('li');
+                let inputChangePlaylistTitle = document.createElement('input');
+                    inputChangePlaylistTitle.setAttribute('type', 'text');
+                
+                let rating = document.createElement('input');
+                    rating.setAttribute('type', 'number');
+                    rating.setAttribute('max', 10);
+                    rating.setAttribute('min', 0);
+                    rating.setAttribute('placeholder', 'rate (1-10)');
+                
+                let ratingButton = document.createElement('button');
+                    ratingButton.innerText = 'Vote';
                 
                 let inputComment = document.createElement('input');
                 inputComment.setAttribute('type', 'text');
-                //inputComment.setAttribute('value', `${commentValue}`); // `${commentValue}`
-              
                 const inputButton = document.createElement('button');
                 inputButton.innerText = "Comment";
                 
-                //let playlistComment = inputComment.value;
                 const clickOnPlaylist = document.createElement('button');
+                
                 const deletePlaylist = document.createElement('button');
                 const updatePlaylist = document.createElement('button');
-                updatePlaylist.innerText = 'Update Playlist'; 
+                const showMorePlaylist = document.createElement('button');
+                      showMorePlaylist.className = 'showMorePlaylist';
+                
+                //Button names
                 deletePlaylist.innerText ='Delete Playlist';
+                updatePlaylist.innerText = 'Update Playlist'; 
+                showMorePlaylist.innerHTML = 'View songs';
+                
+                let singlePlaylistContainer = document.createElement('div');
+                singlePlaylistContainer.className = "singlePlaylistContainer";
+
+                let viewComments = document.createElement('button');
+                    viewComments.id = playlist._id;
+                
                 clickOnPlaylist.id = playlist._id;
                 clickOnPlaylist.dataset.id = playlist._id;
-                clickOnPlaylist.innerText = playlist.title;
+                clickOnPlaylist.innerText = '+';
                 clickOnPlaylist.createdBy = playlist.createdBy;     
                 clickOnPlaylist.trackId = selectTrack;
 
-                li.classList.add('playlistContainer');
+                //li.classList.add('playlistContainer');
+                
                 clickOnPlaylist.addEventListener('click', function() {
                     this.trackId;
                     this.dataset.id;
                     this.innerText;
-                    View.addTrackToPlaylist(this);
-
                     Controller.trackArray(this);  
              
                 });
-                
+
                 inputButton.addEventListener('click', function(){
                     commentValue = inputComment.value
                     postModel.getPlaylistComment(clickOnPlaylist.dataset.id);
@@ -642,22 +790,118 @@ const View = {
                 deletePlaylist.addEventListener('click', function() {
                     deleteDataModel.deletePlaylist(clickOnPlaylist.id);
                 });
+                
+                updatePlaylist.addEventListener('click', function() {
+                    changedPlaylistTitle = inputChangePlaylistTitle.value;
+                    updateModel.changePlaylistTitle(clickOnPlaylist.id);
+                });
 
-                playlistContainer.appendChild(ul);
-                ul.appendChild(li);
-                li.appendChild(clickOnPlaylist);
-
-                li.appendChild(inputComment);
-                li.appendChild(inputButton);
+                ratingButton.addEventListener('click', function(){
+                    ratingValue = rating.value;
+                    postModel.playlistRating(clickOnPlaylist.dataset.id);
+                });
                
+               viewComments.addEventListener('click', function(){
+                    FetchModel.fetchCommentsforSpecifikPlaylist(this);                        
+                   });
+
+              function getCommentofPlaylist(comments){
+                            for(comment of comments){
+                                console.log(comment);
+                                console.log(comment.body);
+                                console.log(comment.username);
+                                console.log(comment._id);
+                            singlePlaylistContainer.innerHTML += `
+                            <p>Comments: ${comment.body}</p>
+                            `;
+                        }
+                        console.log('hej');
+                };
+                
+                
+                function renderHtmlSinglePlaylist () {
+                    singlePlaylistContainer.innerHTML = `
+                        <h4>Tracks</h4>`;
+                    
+                    for(let track of playlist.tracks) {
+                        
+                        for(let artist of track.artists) {
+                            
+                            singlePlaylistContainer.innerHTML += `
+                            
+                            <p>${artist.name} - ${track.title}</p>
+                            `;
+                        }
+                    }
+
+                         viewComments.innerText = 'View all comments';
+                    singlePlaylistContainer.appendChild(deletePlaylist);
+                    singlePlaylistContainer.appendChild(updatePlaylist);
+                    singlePlaylistContainer.appendChild(inputChangePlaylistTitle);
+                    singlePlaylistContainer.appendChild(rating);
+                    singlePlaylistContainer.appendChild(ratingButton);
+           
+                    singlePlaylistContainer.appendChild(inputComment);
+                    singlePlaylistContainer.appendChild(inputButton);
+                    singlePlaylistContainer.appendChild(viewComments);
+                   
+                   //WIP
+                  
+                   
+                }; 
                 
 
-                li.appendChild(deletePlaylist);
-                li.appendChild(updatePlaylist);
 
+       
+        for (var i = 0; i<1; i++) { 
 
+                function sumOfRatings(){
+                        let ratingOfPlaylist = playlist.ratings;
+                        var ratingSum = 0;
+                        for(var i=0; i < ratingOfPlaylist.length; i++){
+                            ratingSum += ratingOfPlaylist[i];
+                        }
+
+                         return ratingSum; 
+                 };
+            
+            let tr = document.createElement('tr'); 
+            table.appendChild(tr); 
+            let playlistTd = document.createElement('td');
+            playlistTd.innerText = playlist.title;
+            let createdByTd = document.createElement('td');
+            createdByTd.innerText = playlist.createdBy;
+            let ratingsTd = document.createElement('td');
+            ratingsTd.innerText = sumOfRatings();
+            let showmore = document.createElement('td');
+
+            
+            createdByTd.innerText = playlist.createdBy;
+            
+            tr.appendChild(playlistTd);
+            playlistTd.appendChild(clickOnPlaylist);
+            tr.appendChild(createdByTd);
+            tr.appendChild(ratingsTd);
+            tr.appendChild(showmore);
+
+    
+            
+            showmore.appendChild(showMorePlaylist);
+            table.appendChild(singlePlaylistContainer);
+           
+        }
+                
+            showMorePlaylist.addEventListener('click', function(){
+                if (singlePlaylistContainer.style.display === "none"){
+                    singlePlaylistContainer.style.display = "block";
+
+                } else {
+                    singlePlaylistContainer.style.display = "none";
+                }
+            })
+                
+                 renderHtmlSinglePlaylist();
             } //End of loop
-        })
     },
 };
 
@@ -666,6 +910,5 @@ FetchModel.fetchArtists();
 FetchModel.fetchAlbums();
 FetchModel.fetchTracks();
 FetchModel.fetchPlaylist();
+FetchModel.fetchComments();
 Controller.registerCreateArtistClickHandler();
-
-

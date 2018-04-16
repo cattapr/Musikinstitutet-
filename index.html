@@ -5,67 +5,85 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">	
 	<title>Musikinstitutet</title>
 	<link rel="stylesheet" href="css/style.css">
+	<link href="https://fonts.googleapis.com/css?family=Barlow+Condensed:500|Raleway:400,900" rel="stylesheet">
 </head>
 <body>
-	
-	    
-        <h2>Add artist</h2>
-	    <label>Artist name</label>
-		<input type="text" id="name" placeholder="Artist name">
-		<label>Genre</label>
-		<input type="text" id="genre" placeholder="genre">
-		<input type="submit" id="submitButton" value="Submit">
-	
+    <header>
+        <div class="header">
+            <div class="headerText">
+                <h1>A really good heading</h1>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Laboriosam, quia? Cupiditate quidem maiores nostrum tempora esse nam atque.</p>
+                <button class="toPlaylistButton">Create a playlist</button>
+                <button class="toSubmitButton">Submit music</button>
+            </div>
+        </div>
+    </header>
     
-    <h2>Search artist</h2>
-	<input type="text" id="myInput" placeholder="Search for names.." title="Type in artist name">
-	<div id="deleteAnArtist"></div>
-	<div id="artists">
-		<ul id="ul"></ul>
-	</div>
+    <div class="uploadContainer">
+        <h2 class="uploadContainerHeading">Upload your music</h2>
+        <div class="addArtist">
+            <h3>Add artist</h3>
+                <label for="artistName">Artist name</label>
+                <input type="text" id="name" name="artistName"  placeholder="Artist name" required>
+                <label for="artistGenre">Genre</label>
+                <input type="text" id="genre" name="artistGenre" placeholder="genre" required>
+                <input type="submit" class="submitButton" id="submitButton" value="Submit">
+        </div> 
 
-	<div id="addAlbum">
-	    <h2>Add album</h2>
-	    <label>Album name</label>
-		<input type="text" id="albumTitle" placeholder="Title of the album">
-		<label>Release date</label>
-		<input type="text" id="albumRelease" placeholder="Releasedate of the album">
-		<label>Genre</label>
-		<input type="text" id="albumGenre" placeholder="Genre of the album">
-		<button id="albumButton">Add album +</button>
-	</div>
-	
-	<div id="addTrack">
-	    <h2>Add tracks</h2>
-	    <label>Track name</label>
-	   <input type="text" id="albumTrack" placeholder="Title of the track">
-	   <button id="trackButton">Add track +</button>
-	    
-	</div>
-	
-	<div id="addPlayList">
-	    <h2>Create Playlist</h2>
-	    <label>Playlist name</label>
-	   <input type="text" id="createdPlaylist" placeholder="Title of the playlist">
-	   <input type="text" id="createdBy" placeholder="Created By">
-	   <button id="playlistButton">Add playlist +</button>    
-	</div>
+        <div class="addAlbum">
+            <h3>Add album</h3>
+            <label>Choose artist</label>
+            <input type="text" id="myInput" placeholder="Search artist name" title="Search artist name">
+            <div id="deleteAnArtist"></div>
+            <div id="artists">
+                <ul id="ul"></ul>
+            </div>
 
-	<div id="playlistContainer">
-		<ul id="playList"></ul>
-		<button id="showAllplaylists">Show all playlists</button>
-	</div>
-	
-    <div id="trackContainer">
-		<ul id="trackList"></ul>
-		<button id="showAllTracks">Show all tracks</button>
-	</div>
+            <div id="addAlbum">
+                <h3 id="artistHeading"></h3>
+                <label for="albumTitle">Album name</label>
+                <input type="text" id="albumTitle" name="albumTitle" placeholder="Title of the album" required>
+                <label for="albumRelease">Release date</label>
+                <input type="text" id="albumRelease" name="albumRelease" placeholder="Releasedate of the album" required>
+                <label for="albumGenre">Genre</label>
+                <input type="text" id="albumGenre" name="albumGenre" placeholder="Genre of the album" required>
+                <button id="albumButton">Add album +</button>
+            </div>
+        </div>
 
-	<div id="albumContainer">
-		<ul id="albumList"></ul>
-		<button id="showAllAlbums">Show all albums</button>
-	</div>
+        <div class="addTrack" id="addTrack">
+            <h3>Add tracks</h3>
+            <label for="albumTrack">Track name</label>
+           <input type="text" id="albumTrack" name="albumTrack" placeholder="Title of the track">
+           <button id="trackButton">Add track +</button>
 
+        </div>
+
+        <div class="addPlaylist" id="addPlayList">
+            <h3>Create Playlist</h3>
+            <label for="createPlaylist">Playlist name</label>
+           <input type="text" id="createdPlaylist" name="createPlaylist" placeholder="Title of the playlist">
+           <label for="createdBy">Your name</label>
+           <input type="text" id="createdBy" name="createdBy" placeholder="Created By">
+           <button id="playlistButton">Add playlist +</button>    
+        </div>
+	</div>
+    
+    <div class="listContainer">
+        <div class="playlistContainer" id="playlistContainer">
+            <ul id="playList"></ul>
+        </div>
+
+        <div id="trackContainer">
+            <ul id="trackList"></ul>
+            <button id="showAllTracks">Show all tracks</button>
+        </div>
+
+        <div id="albumContainer">
+            <ul id="albumList"></ul>
+            <button id="showAllAlbums">Show all albums</button>
+        </div>
+    </div>
 
 	
 	<script src="js/main.js"></script>
