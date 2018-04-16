@@ -22,6 +22,7 @@
     <div class="uploadContainer">
         <h2 class="uploadContainerHeading">Upload your music</h2>
         <div class="addArtist">
+        	<div id="errorMessage"><p id="errorText"><p></div>
             <h3>Add artist</h3>
                 <label for="artistName">Artist name</label>
                 <input type="text" id="name" name="artistName"  placeholder="Artist name" required>
@@ -33,6 +34,7 @@
         <div class="addAlbum">
             <h3>Add album</h3>
             <label>Choose artist</label>
+            <div id="chooseArtistErrorMsg"><p id="errorMsgText"></p></div>
             <input type="text" id="myInput" placeholder="Search artist name" title="Search artist name">
             <div id="deleteAnArtist"></div>
             <div id="artists">
@@ -53,6 +55,7 @@
 
         <div class="addTrack" id="addTrack">
             <h3>Add tracks</h3>
+            <div id="addTrackErrorMsg"><p id="errorMsg"><p></div>
             <label for="albumTrack">Track name</label>
            <input type="text" id="albumTrack" name="albumTrack" placeholder="Title of the track">
            <button id="trackButton">Add track +</button>
@@ -61,6 +64,7 @@
 
         <div class="addPlaylist" id="addPlayList">
             <h3>Create Playlist</h3>
+            <div id="createPlaylistErrorMsg"><p id="errorTextMsg"><p></div>
             <label for="createPlaylist">Playlist name</label>
            <input type="text" id="createdPlaylist" name="createPlaylist" placeholder="Title of the playlist">
            <label for="createdBy">Your name</label>

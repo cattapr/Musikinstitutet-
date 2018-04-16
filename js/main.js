@@ -19,6 +19,13 @@ const FetchModel = {
                 Controller.checkIfArtistExists(artists);
                 View.displayArtistList(artists);
             })
+
+            .catch((error) =>{     
+            console.log(error);
+            console.log('det funkar inte');
+            View.errorMessage();
+       });
+
     },
 
     fetchAlbums() {
@@ -28,7 +35,12 @@ const FetchModel = {
                 console.log(albums);
                 View.displayAlbumList(albums);
             })
+
+            .catch((error) =>{     
+            console.log(error);
+       });
     },
+
 
     fetchTracks(){
         return fetch('https://folksa.ga/api/tracks?key=flat_eric&limit=1000')
@@ -37,6 +49,9 @@ const FetchModel = {
                View.displayTracksList(tracks);    
                console.log('tracks:', tracks);
         })
+            .catch((error) =>{     
+            console.log(error);
+       });
     },
 
     fetchPlaylist(){
@@ -46,6 +61,11 @@ const FetchModel = {
                console.log('playlist:', playlists);
                View.displayPlayLists(playlists);
         })
+
+            .catch((error) =>{     
+            console.log(error);
+       });
+
     },
     
     fetchComments(){
@@ -61,9 +81,16 @@ const FetchModel = {
         return fetch(`https://folksa.ga/api/playlists/${playlist}/comments?key=flat_eric`)
             .then((response) => response.json())
             .then((comments) => {
-                  View.getCommentofPlaylist(comments);
-        });
-   } //functionen ska kallas någonstans
+                  for(comment of comments){
+                                console.log(comment);
+                                console.log(comment.body);
+                                console.log(comment.username);
+                                 console.log(comment._id);
+        }
+
+         View.getCommentofPlaylist(comments);
+   }); //functionen ska kallas någonstans
+},
 
 };
 
@@ -76,6 +103,13 @@ const FetchModel = {
             .then((albums) => {
                 console.log('Albums:', albums);   
             })
+
+            .catch((error) =>{     
+            console.log(error);
+            console.log('det funkar inte');
+            View.errorMessage();
+       });
+
     },
 
     updateArtists() {
@@ -85,6 +119,13 @@ const FetchModel = {
                 console.log('update:', artists);
                 View.displayArtistList(artists);
         })
+
+           .catch((error) =>{     
+            console.log(error);
+            console.log('det funkar inte');
+            View.errorMessage();
+       });
+
     },
         
     changeAlbumTitle(album){
@@ -158,7 +199,13 @@ const deleteDataModel = {
             .then((response) => response.json())
             .then((artist) => {
                 console.log(artist);
-            });
+            }) 
+
+            .catch((error) =>{     
+            console.log(error);
+            console.log('det funkar inte');
+            View.errorMessage();
+         });
         },
 
 
@@ -173,7 +220,13 @@ const deleteDataModel = {
                   .then((response) => response.json())
                   .then((album) => {
                     console.log(album);
-                  });
+                  }) 
+
+                   .catch((error) =>{     
+            console.log(error);
+            console.log('det funkar inte');
+            View.errorMessage();
+       });
 
         
     },
@@ -189,7 +242,13 @@ const deleteDataModel = {
                   .then((response) => response.json())
                   .then((track) => {
                     console.log(track);
-                  });
+                  })
+
+                  .catch((error) =>{     
+            console.log(error);
+            console.log('det funkar inte');
+            View.errorMessage();
+       });
 
         
     },
@@ -205,7 +264,13 @@ const deleteDataModel = {
               .then((response) => response.json())
               .then((playlist) => {
                 console.log(playlist);
-              });
+              })
+
+              .catch((error) =>{     
+            console.log(error);
+            console.log('det funkar inte');
+            View.errorMessage();
+       });
 
     
     },
@@ -248,7 +313,7 @@ const Controller = {
         }
    },
 
-    getAlbumId(albums){
+     getAlbumId(albums){
         let albumId = albums._id;
         console.log(albumId);
         return albumId;
@@ -264,6 +329,15 @@ const Controller = {
 
    registerCreateArtistClickHandler() {
         submitButton.onclick = function createArtist(){
+            let artistName = View.getinputName();
+            let artistGenre = View.getinputGenre();
+
+       if(artistName === "" || artistGenre === ""){
+        console.log("you need to fill in both fields!");
+
+       }
+
+       else {
             let artist = {
                 name: View.getinputName(),
                 gender: "other",
@@ -274,38 +348,79 @@ const Controller = {
 
             postModel.postArtist(artist); 
         }
+
+        };
+    },
+
+    addAlbumbutton(){
+        const addAlbumButton = document.getElementById('albumButton');
+        addAlbumButton.onclick = function(){
+            const errorMessage = document.getElementById('chooseArtistErrorMsg');
+            let errorMessageText = document.getElementById('errorMsgText');
+            errorMessageText.innerText = 'You need to choose an artist first!';
+        }
     },
 
     registerCreateAlbumClickHandler(albumButton) {
         let id = albumButton.id;
         let button = albumButton;
-        button.onclick = function createAlbum() {
-            let album = {
-                title: View.albumTitle(),
-                artists: id, //Can be multiple IDs, must be comma separated string if multiple
-                releaseDate: View.albumReleaseDate(),
-                genres: View.albumGenre(), //Must be a comma separated string
-                spotifyURL: "https://open.spotify.com/album/1jKfTvT64lcQwA74WmkKiJ?si=nmdUZ2UpS4uUknUrGX1smg",
-                coverImage: "https://upload.wikimedia.org/wikipedia/en/thumb/0/02/Tim_Buckley_-_Goodbye_And_Hello.jpg/220px-Tim_Buckley_-_Goodbye_And_Hello.jpg"
-            } 
 
-             postModel.postAlbum(album); 
+        button.onclick = function createAlbum() {
+            let albumTitle = View.albumTitle();
+            let albumReleaseDate = View.albumReleaseDate();
+            let albumGenre = View.albumGenre();
+
+                if(albumTitle === "" || albumReleaseDate === "" || albumGenre === ""){
+                    console.log("you need to fill in all fields!");
+
+           } else {
+
+                let album = {
+                    title: View.albumTitle(),
+                    artists: id, //Can be multiple IDs, must be comma separated string if multiple
+                    releaseDate: View.albumReleaseDate(),
+                    genres: View.albumGenre(), //Must be a comma separated string
+                    spotifyURL: "https://open.spotify.com/album/1jKfTvT64lcQwA74WmkKiJ?si=nmdUZ2UpS4uUknUrGX1smg",
+                    coverImage: "https://upload.wikimedia.org/wikipedia/en/thumb/0/02/Tim_Buckley_-_Goodbye_And_Hello.jpg/220px-Tim_Buckley_-_Goodbye_And_Hello.jpg"
+                } 
+
+                 postModel.postAlbum(album); 
+            }
+           }
+            
+    },
+
+        addTrackButton(){
+        const addTrackButton = document.getElementById('trackButton');
+        addTrackButton.onclick = function(){
+            const errorMessage = document.getElementById('addTrackErrorMsg');
+            let errorMessageText = document.getElementById('errorMsg');
+            errorMessageText.innerText = 'You need to choose an album or a playlist first to add a track!';
         }
     },
 
     trackButton: document.getElementById('trackButton'),
 
-    registerTrackToAlbumClickHandler(album, artist) {
+    registerTrackTitleToAlbumClickHandler(selectedAlbum,selectedArtist) {
         trackButton.onclick = function createTrack() {
             let track = {
                 title: View.albumTrack(),
-                artists: artist.join(','), // Must be a string with comma separated values
-                album: album,   // Must be a string with comma separated values
+                artists: selectedArtist.join(','), // Must be a string with comma separated values
+                album: selectedAlbum,   // Must be a string with comma separated values
                 genres: "Folk,Rock"
             }
             console.log(track); 
             postModel.postTrack(track);
          }
+    },
+
+    createPlaylistButton(){
+        const createPlaylistButton = document.getElementById('playlistButton');
+        createPlaylistButton.onclick = function(){
+            const errorMessage = document.getElementById('createPlaylistErrorMsg');
+            let errorMessageText = document.getElementById('errorTextMsg');
+            errorMessageText.innerText = 'You need to choose a track first if you want to create a new playlist!';
+        }
     },
 
    registerTrackToPlaylistClickHandler(){
@@ -372,6 +487,12 @@ const postModel = {
                 console.log(artist);
                 updateModel.updateArtists();
          })
+
+              .catch((error) =>{     
+            console.log(error);
+            console.log('det funkar inte');
+            View.errorMessage();
+       });
     },
 
     postAlbum(album) {
@@ -390,6 +511,13 @@ const postModel = {
                 selectedAlbum = Controller.getAlbumId(albums);
                 selectedArtist = Controller.getArtistId(albums);
         })
+
+            .catch((error) =>{     
+            console.log(error);
+            console.log('det funkar inte');
+            View.errorMessage();
+       });
+
     },
 
     postTrack(track) { 
@@ -406,6 +534,12 @@ const postModel = {
        .then((postedTrack) => {
             console.log('One track:', postedTrack);
         })
+
+        .catch((error) =>{     
+            console.log(error);
+            console.log('det funkar inte');
+            View.errorMessage();
+       });
     },
 
     postPlaylist(playlist) {
@@ -421,6 +555,12 @@ const postModel = {
         .then((playlist) => {
             console.log(playlist);
         })
+
+         .catch((error) =>{     
+            console.log(error);
+            console.log('det funkar inte');
+            View.errorMessage();
+       });
     },
     
       getPlaylistComment(playlistID){
@@ -448,7 +588,12 @@ const postModel = {
         .then((response) => response.json())
         .then((playlist) => {
         console.log(playlist);
-      });
+      })
+        .catch((error) =>{     
+            console.log(error);
+            console.log('det funkar inte');
+            View.errorMessage();
+       });
     },
     
     playlistRating(playlist) {
@@ -476,6 +621,14 @@ const postModel = {
 
 
 const View = {
+
+    errorMessage (){
+            const errorMessageContainer = document.getElementById('errorMessage');
+            const errorMessage = document.getElementById('errorText');
+            errorMessage.innerText = 'Something went wrong, please try again!';
+            errorMessageContainer.appendChild(errorMessage);
+    },
+
 
     getinputName() {
        let getinputName = document.getElementById('name').value;
@@ -632,10 +785,9 @@ const View = {
 
     addTrackToPlaylist(song) {
         console.log('Playlist id:', song.id);
-
         console.log('Songtrack id:', song.trackId);
-
         selectTrack = song.trackId;
+        Controller.registerTrackToPlaylistClickHandler();
 
     },
 
@@ -688,14 +840,14 @@ const View = {
     },
 
 
-    registerAlbumId(albumId) {
-        console.log('Album Id:', albumId.id);
-        console.log('Artist Id of clicked album:', albumId.artistId);
+    registerAlbumId(album) {
+        console.log('Album Id:', album.id);
+        console.log('Artist Id of clicked album:', album.artistId);
 
-        let album = albumId.id;
-        let artist = albumId.artistId;
-     
-        Controller.registerTrackToAlbumClickHandler(album, artist);    
+        selectedArtist = album.artistId;
+        selectedAlbum = album.id;
+
+        Controller.registerTrackTitleToAlbumClickHandler(selectedAlbum,selectedArtist);
     },
 
     showAllplaylists: document.getElementById("showAllplaylists"),
@@ -834,7 +986,7 @@ const View = {
                         }
                     }
 
-                         viewComments.innerText = 'View all comments';
+                    viewComments.innerText = 'View all comments';
                     singlePlaylistContainer.appendChild(deletePlaylist);
                     singlePlaylistContainer.appendChild(updatePlaylist);
                     singlePlaylistContainer.appendChild(inputChangePlaylistTitle);
@@ -856,6 +1008,7 @@ const View = {
         for (var i = 0; i<1; i++) { 
 
                 function sumOfRatings(){
+
                         let ratingOfPlaylist = playlist.ratings;
                         var ratingSum = 0;
                         for(var i=0; i < ratingOfPlaylist.length; i++){
@@ -911,4 +1064,7 @@ FetchModel.fetchAlbums();
 FetchModel.fetchTracks();
 FetchModel.fetchPlaylist();
 FetchModel.fetchComments();
+Controller.addAlbumbutton();
+Controller.addTrackButton();
+Controller.createPlaylistButton();
 Controller.registerCreateArtistClickHandler();
