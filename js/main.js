@@ -17,144 +17,287 @@ const FetchModel = {
                 View.displayArtistList(artists);
             })
 
-            .catch((error) =>{     
-            console.log(error);
-            console.log('det funkar inte');
-            View.errorMessage();
-       });
-
+            .catch((error) => {
+                console.log(error);
+                console.log('det funkar inte');
+                View.errorMessage();
+            });
     },
 
     fetchAlbums() {
         return fetch('https://folksa.ga/api/albums?key=flat_eric&limit=20&populateArtists=true')
-           .then((response) => response.json())
-           .then((albums) => {
+            .then((response) => response.json())
+            .then((albums) => {
                 console.log('Albums', albums);
                 View.displayAlbumList(albums);
             })
 
-            .catch((error) =>{     
-            console.log(error);
-       });
+            .catch((error) => {
+                console.log(error);
+            });
     },
 
 
-    fetchTracks(){
+    fetchTracks() {
         return fetch('https://folksa.ga/api/tracks?key=flat_eric&limit=50')
-           .then((response) => response.json())
-           .then((tracks) => {
-               View.displayTracksList(tracks);    
-               console.log('tracks:', tracks);
-        })
-            .catch((error) =>{     
-            console.log(error);
-       });
+            .then((response) => response.json())
+            .then((tracks) => {
+                View.displayTracksList(tracks);
+                console.log('tracks:', tracks);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     },
 
-    fetchPlaylist(){
+    fetchPlaylist() {
         return fetch('https://folksa.ga/api/playlists?key=flat_eric&limit=10')
-           .then((response) => response.json())
-           .then((playlists) => {
-               console.log('playlist:', playlists);
-               View.displayPlayLists(playlists);
-        })
-
-            .catch((error) =>{     
-            console.log(error);
-       });
-
+            .then((response) => response.json())
+            .then((playlists) => {
+                console.log('playlist:', playlists);
+                View.displayPlayLists(playlists);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     },
-    
-    fetchComments(){
+
+    fetchComments() {
         return fetch(`https://folksa.ga/api/comments?key=flat_eric`)
             .then((response) => response.json())
             .then((comments) => {
                 console.log('All comments: ', comments);
             });
     },
-    
-    fetchCommentsforSpecifikPlaylist(playlistID){
+
+    fetchCommentsforSpecifikPlaylist(playlistID) {
         let playlist = playlistID.id;
         return fetch(`https://folksa.ga/api/playlists/${playlist}/comments?key=flat_eric`)
             .then((response) => response.json())
             .then((comments) => {
-                  for(comment of comments){
-                                console.log(comment);
-                                console.log(comment.body);
-                                console.log(comment.username);
-                                 console.log(comment._id);
-        }
-
-         View.getCommentofPlaylist(comments);
-   }); //functionen ska kallas någonstans
-},
-
+                for(comment of comments){
+                const container = playlistID.parentElement;
+                const commentBody = document.createElement('p');
+                const commentUser = document.createElement('p');
+                const deleteComment = document.createElement('button');
+                deleteComment.innerText = 'Delete comment';
+                commentBody.innerHTML = `Comment: ${comment.body}`;
+                commentUser.innerHTML = `By: ${comment.username}`;
+                container.appendChild(commentBody);
+                container.appendChild(commentUser);
+                container.appendChild(deleteComment);
+                deleteDataModel.registerDeleteCommentClickHandler(deleteComment, comment._id);
+             };
+            });
+    }
 };
 
-    const updateModel = {
+const postModel = {
 
-        //hämtar album
+    postArtist(artist) {
+        return fetch('https://folksa.ga/api/artists?key=flat_eric', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(artist)
+            })
+            .then((response) => response.json())
+            .then((artist) => {
+                console.log(artist);
+                updateModel.updateArtists();
+            })
+            .catch((error) => {
+                console.log(error);
+                console.log('det funkar inte');
+                View.errorMessage();
+            });
+    },
+
+    postAlbum(album) {
+        return fetch('https://folksa.ga/api/albums?key=flat_eric', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(album)
+            })
+
+            .then((response) => response.json())
+            .then((albums) => {
+                console.log('New album:', albums);
+                selectedAlbum = Controller.getAlbumId(albums);
+                selectedArtist = Controller.getArtistId(albums);
+            })
+
+            .catch((error) => {
+                console.log(error);
+                console.log('det funkar inte');
+                View.errorMessage();
+            });
+    },
+
+    postTrack(track) {
+        return fetch('https://folksa.ga/api/tracks?key=flat_eric', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(track)
+            })
+
+            .then((response) => response.json())
+            .then((postedTrack) => {
+                console.log('One track:', postedTrack);
+            })
+
+            .catch((error) => {
+                console.log(error);
+                console.log('det funkar inte');
+                View.errorMessage();
+            });
+    },
+
+    postPlaylist(playlist) {
+        return fetch('https://folksa.ga/api/playlists?key=flat_eric', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(playlist)
+            })
+
+            .then((response) => response.json())
+            .then((playlist) => {
+                console.log(playlist);
+            })
+
+            .catch((error) => {
+                console.log(error);
+                console.log('det funkar inte');
+                View.errorMessage();
+            });
+    },
+
+    getPlaylistComment(playlistID) {
+        let playlistid = playlistID;
+
+        let comment = {
+            playlist: playlistid,
+            body: commentValue,
+            username: "The commenter"
+        }
+        postModel.postCommentToPlaylist(playlistid, comment)
+    },
+
+
+    postCommentToPlaylist(playlistid, comment) {
+        return fetch(`https://folksa.ga/api/playlists/${playlistid}/comments?key=flat_eric`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(comment)
+            })
+
+            .then((response) => response.json())
+            .then((playlist) => {
+                console.log(playlist);
+            })
+
+            .catch((error) => {
+                console.log(error);
+                console.log('det funkar inte');
+                View.errorMessage();
+            });
+    },
+
+    playlistRating(playlist) {
+        let playlistID = playlist;
+        let vote = ratingValue;
+        postModel.voteOnPlaylist(playlistID, vote);
+    },
+
+    voteOnPlaylist(playlistID, vote) {
+        return fetch(`https://folksa.ga/api/playlists/${playlistID}/vote?key=flat_eric`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ rating: vote })
+            })
+
+            .then((response) => response.json())
+            .then((playlist) => {
+                console.log(playlist);
+            });
+    }
+};
+
+
+const updateModel = {
+
     updateAlbums() {
         return fetch('https://folksa.ga/api/albums?key=flat_eric')
             .then((response) => response.json())
             .then((albums) => {
-                console.log('Albums:', albums);   
+                console.log('Albums:', albums);
             })
-
-            .catch((error) =>{     
-            console.log(error);
-            console.log('det funkar inte');
-            View.errorMessage();
-       });
-
+            .catch((error) => {
+                console.log(error);
+                console.log('det funkar inte');
+                View.errorMessage();
+            });
     },
 
     updateArtists() {
         return fetch('https://folksa.ga/api/artists?key=flat_eric&sort=asc&limit=50')
-           .then((response) => response.json())
-           .then((artists) => {
+            .then((response) => response.json())
+            .then((artists) => {
                 console.log('update:', artists);
                 View.displayArtistList(artists);
-        })
-
-           .catch((error) =>{     
-            console.log(error);
-            console.log('det funkar inte');
-            View.errorMessage();
-       });
-
+            })
+            .catch((error) => {
+                console.log(error);
+                console.log('det funkar inte');
+                View.errorMessage();
+            });
     },
-        
-    changeAlbumTitle(album){
+
+    changeAlbumTitle(album) {
         let updates = {
-          title: changedAlbumTitle,
+            title: changedAlbumTitle,
         }
 
         let albumID = album;
         console.log(updates, albumID);
         updateModel.updateAspecifikAlbum(albumID, updates);
-
     },
 
-    updateAspecifikAlbum(albumID, updates){
-        return fetch(`https://folksa.ga/api/albums/${albumID}?key=flat_eric`,
-          {
-            method: 'PATCH',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(updates)
-          })
-          .then((response) => response.json())
-          .then((album) => {
-            console.log('Update album Title:', album);
-          });
+    updateAspecifikAlbum(albumID, updates) {
+        return fetch(`https://folksa.ga/api/albums/${albumID}?key=flat_eric`, {
+                method: 'PATCH',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updates)
+            })
+            .then((response) => response.json())
+            .then((album) => {
+                console.log('Update album Title:', album);
+            });
     },
 
-     changePlaylistTitle(playlist){
+    changePlaylistTitle(playlist) {
         let updates = {
-          title: changedPlaylistTitle,
+            title: changedPlaylistTitle,
         }
 
         let playlistID = playlist;
@@ -163,134 +306,121 @@ const FetchModel = {
 
     },
 
-    updateAspecifikPlaylist(playlistID, updates){
-        return fetch(`https://folksa.ga/api/playlists/${playlistID}?key=flat_eric`,
-          {
-            method: 'PATCH',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(updates)
-          })
-          .then((response) => response.json())
-          .then((playlist) => {
-            console.log('Update playlist Title:', playlist);
-          });
-    }    
-
-
+    updateAspecifikPlaylist(playlistID, updates) {
+        return fetch(`https://folksa.ga/api/playlists/${playlistID}?key=flat_eric`, {
+                method: 'PATCH',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updates)
+            })
+            .then((response) => response.json())
+            .then((playlist) => {
+                console.log('Update playlist Title:', playlist);
+            });
+    }
 };
 
 
 const deleteDataModel = {
 
-     deleteArtist(artistID) {
+    deleteArtist(artistID) {
         return fetch(`https://folksa.ga/api/artists/${artistID}?key=flat_eric`, {
-            method: 'DELETE',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
+                method: 'DELETE',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
             })
             .then((response) => response.json())
             .then((artist) => {
                 console.log(artist);
-            }) 
-
-            .catch((error) =>{     
-            console.log(error);
-            console.log('det funkar inte');
-            View.errorMessage();
-         });
-        },
-
-
-    deleteAlbum(albumID){
-            return fetch(`https://folksa.ga/api/albums/${albumID}?key=flat_eric`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                  })
-                  .then((response) => response.json())
-                  .then((album) => {
-                    console.log(album);
-                  }) 
-
-                   .catch((error) =>{     
-            console.log(error);
-            console.log('det funkar inte');
-            View.errorMessage();
-       });
-
-        
+            })
+            .catch((error) => {
+                console.log(error);
+                console.log('det funkar inte');
+                View.errorMessage();
+            });
     },
 
-     deleteTrack(trackID){
-            return fetch(`https://folksa.ga/api/tracks/${trackID}?key=flat_eric`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                  })
-                  .then((response) => response.json())
-                  .then((track) => {
-                    console.log(track);
-                  })
 
-                  .catch((error) =>{     
-            console.log(error);
-            console.log('det funkar inte');
-            View.errorMessage();
-       });
-
-        
+    deleteAlbum(albumID) {
+        return fetch(`https://folksa.ga/api/albums/${albumID}?key=flat_eric`, {
+                method: 'DELETE',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+            })
+            .then((response) => response.json())
+            .then((album) => {
+                console.log(album);
+            })
+            .catch((error) => {
+                console.log(error);
+                console.log('det funkar inte');
+                View.errorMessage();
+            });
     },
 
-     deletePlaylist(playlistID){
+    deleteTrack(trackID) {
+        return fetch(`https://folksa.ga/api/tracks/${trackID}?key=flat_eric`, {
+                method: 'DELETE',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+            })
+            .then((response) => response.json())
+            .then((track) => {
+                console.log(track);
+            })
+            .catch((error) => {
+                console.log(error);
+                console.log('det funkar inte');
+                View.errorMessage();
+            });
+    },
+
+    deletePlaylist(playlistID) {
         return fetch(`https://folksa.ga/api/playlists/${playlistID}?key=flat_eric`, {
                 method: 'DELETE',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
-              })
-              .then((response) => response.json())
-              .then((playlist) => {
-                console.log(playlist);
-              })
-
-              .catch((error) =>{     
-            console.log(error);
-            console.log('det funkar inte');
-            View.errorMessage();
-       });
-
-    
-    },
-    
-    deleteAcomment(commentID){
-      return fetch(`https://folksa.ga/api/comments/${commentID}?key=flat_eric`, {
-            method: 'DELETE',
-            headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-            },
-
             })
             .then((response) => response.json())
-            .then((comment) => {
-                console.log(comment);
-            });
-    }
+            .then((playlist) => {
+                console.log(playlist);
+            })
 
+            .catch((error) => {
+                console.log(error);
+                console.log('det funkar inte');
+                View.errorMessage();
+            });
+    },
+
+    registerDeleteCommentClickHandler(deleteButton, commentsID){
+        deleteButton.onclick = function deleteAcomment() {
+            return fetch(`https://folksa.ga/api/comments/${commentsID}?key=flat_eric`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+
+                })
+                .then((response) => response.json())
+                .then((comment) => {
+                    console.log(comment);
+                });
+        }
+    }
 };
 
-
-    
 
 
 const Controller = {
@@ -302,57 +432,53 @@ const Controller = {
             id = nameOfArtist;
             let inputname = View.getinputName();
 
-            if (id ==  inputname) {
+            if (id == inputname) {
                 console.log("Artist already exists", id);
             } else {
                 console.log("not match");
             }
         }
-   },
+    },
 
-     getAlbumId(albums){
+    getAlbumId(albums) {
         let albumId = albums._id;
         console.log(albumId);
         return albumId;
     },
 
-    getArtistId(albums){
+    getArtistId(albums) {
         let artistId = albums.artists.join(',');
         console.log(artistId);
         return artistId;
     },
-            
+
     submitButton: document.getElementById('submitButton'),
 
-   registerCreateArtistClickHandler() {
-        submitButton.onclick = function createArtist(){
+    registerCreateArtistClickHandler() {
+        submitButton.onclick = function createArtist() {
             let artistName = View.getinputName();
             let artistGenre = View.getinputGenre();
 
-       if(artistName === "" || artistGenre === ""){
-        const errorContainer = document.getElementById('emptyInput');
-        let errorMessage = document.getElementById('error');
-         errorMessage.innerText = 'You need to fill in both fields!';
-       }
-
-       else {
-            let artist = {
-                name: View.getinputName(),
-                gender: "other",
-                genres: View.getinputGenre(), //Must be a comma separated string
-                spotifyURL: "https://open.spotify.com/artist/6zHRqvws8dVeqL8D31ponr?si=QFWoLwwBTa-KrR3gUcLMYQ",
-                coverImage: "https://img.discogs.com/D7eDvyQrOJIJlDX-ieliD0QmAG4=/500x500/smart/filters:strip_icc():format(jpeg):mode_rgb():quality(90)/discogs-images/A-71872-1426020311-7115.jpeg.jpg"
+            if (artistName === "" || artistGenre === "") {
+                const errorContainer = document.getElementById('emptyInput');
+                let errorMessage = document.getElementById('error');
+                errorMessage.innerText = 'You need to fill in both fields!';
+            } else {
+                let artist = {
+                    name: View.getinputName(),
+                    gender: "other",
+                    genres: View.getinputGenre(), //Must be a comma separated string
+                    spotifyURL: "https://open.spotify.com/artist/6zHRqvws8dVeqL8D31ponr?si=QFWoLwwBTa-KrR3gUcLMYQ",
+                    coverImage: "https://img.discogs.com/D7eDvyQrOJIJlDX-ieliD0QmAG4=/500x500/smart/filters:strip_icc():format(jpeg):mode_rgb():quality(90)/discogs-images/A-71872-1426020311-7115.jpeg.jpg"
+                }
+                postModel.postArtist(artist);
             }
-
-            postModel.postArtist(artist); 
-        }
-
         };
     },
 
-    addAlbumbutton(){
+    addAlbumbutton() {
         const addAlbumButton = document.getElementById('albumButton');
-        addAlbumButton.onclick = function(){
+        addAlbumButton.onclick = function() {
             const errorMessage = document.getElementById('chooseArtistErrorMsg');
             let errorMessageText = document.getElementById('errorMsgText');
             errorMessageText.innerText = 'You need to choose an artist first!';
@@ -368,10 +494,10 @@ const Controller = {
             let albumReleaseDate = View.albumReleaseDate();
             let albumGenre = View.albumGenre();
 
-                if(albumTitle === "" || albumReleaseDate === "" || albumGenre === ""){
-                    console.log("you need to fill in all fields!");
+            if (albumTitle === "" || albumReleaseDate === "" || albumGenre === "") {
+                console.log("you need to fill in all fields!");
 
-           } else {
+            } else {
 
                 let album = {
                     title: View.albumTitle(),
@@ -380,17 +506,15 @@ const Controller = {
                     genres: View.albumGenre(), //Must be a comma separated string
                     spotifyURL: "https://open.spotify.com/album/1jKfTvT64lcQwA74WmkKiJ?si=nmdUZ2UpS4uUknUrGX1smg",
                     coverImage: "https://upload.wikimedia.org/wikipedia/en/thumb/0/02/Tim_Buckley_-_Goodbye_And_Hello.jpg/220px-Tim_Buckley_-_Goodbye_And_Hello.jpg"
-                } 
-
-                 postModel.postAlbum(album); 
+                }
+                postModel.postAlbum(album);
             }
-           }
-            
+        }
     },
 
-        addTrackButton(){
+    addTrackButton() {
         const addTrackButton = document.getElementById('trackButton');
-        addTrackButton.onclick = function(){
+        addTrackButton.onclick = function() {
             const errorMessage = document.getElementById('addTrackErrorMsg');
             let errorMessageText = document.getElementById('errorMsg');
             errorMessageText.innerText = 'You need to choose an album to add a new track!';
@@ -399,277 +523,120 @@ const Controller = {
 
     trackButton: document.getElementById('trackButton'),
 
-    registerTrackTitleToAlbumClickHandler(selectedAlbum,selectedArtist) {
+    registerTrackTitleToAlbumClickHandler(artistId) {
         trackButton.onclick = function createTrack() {
             let track = {
                 title: View.albumTrack(),
-                artists: selectedArtist.join(','), // Must be a string with comma separated values
-                album: selectedAlbum,   // Must be a string with comma separated values
+                artists: artistId, // Must be a string with comma separated values
+                album: selectedAlbum, // Must be a string with comma separated values
                 genres: "Folk,Rock"
             }
-            console.log(track); 
+            console.log(track);
             postModel.postTrack(track);
-         }
+        }
     },
 
-    createPlaylistButton(){
+    createPlaylistButton() {
         const createPlaylistButton = document.getElementById('playlistButton');
-        createPlaylistButton.onclick = function(){
+        createPlaylistButton.onclick = function() {
             const errorMessage = document.getElementById('createPlaylistErrorMsg');
             let errorMessageText = document.getElementById('errorTextMsg');
             errorMessageText.innerText = 'You need to choose a track first if you want to create a new playlist!';
         }
     },
 
-   registerTrackToPlaylistClickHandler(){
+    registerTrackToPlaylistClickHandler() {
         let addPlaylistButton = View.addPlaylist;
-         addPlaylistButton.onclick = function createPlaylist() {
-                let playlist = {
-                    title: View.getinputPlaylist(),
-                    genres: "Folk, Folk Rock",
-                    createdBy: View.getinputCreatedBy(),
-                    tracks: selectTrack,
-                    coverImage: "https://www.internetmuseum.se/wordpress/wp-content/uploads/compisknappar-504x329.jpg",
-                    coverImageColor: "#000"
-                }
-                console.log('hej');
-                postModel.postPlaylist(playlist);
+        addPlaylistButton.onclick = function createPlaylist() {
+            let playlist = {
+                title: View.getinputPlaylist(),
+                genres: "Folk, Folk Rock",
+                createdBy: View.getinputCreatedBy(),
+                tracks: selectTrack,
+                coverImage: "https://www.internetmuseum.se/wordpress/wp-content/uploads/compisknappar-504x329.jpg",
+                coverImageColor: "#000"
+            }
+            console.log('hej');
+            postModel.postPlaylist(playlist);
         }
     },
 
     trackArray(playlistID) {
-
         let tracks = selectTrack;
         let playlist = playlistID.dataset.id;
 
         Controller.postTrackToPlaylist(playlist, tracks);
-        console.log('Innehåller den id?' , tracks);
+        console.log('Innehåller den id?', tracks);
     },
 
-     postTrackToPlaylist (playlist, tracks) { 
+    postTrackToPlaylist(playlist, tracks) {
         return fetch(`https://folksa.ga/api/playlists/${playlist}/tracks?key=flat_eric`, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ tracks: tracks })
-          })
-
-          .then((response) => response.json())
-          .then((playlist) => {
-            console.log('new track to playlist:', playlist);
-
-
-          });
-
-        }
-
-};
-
-
-const postModel = {
-
-    postArtist(artist) {
-        return fetch('https://folksa.ga/api/artists?key=flat_eric', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(artist)
-        })
-
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ tracks: tracks })
+            })
             .then((response) => response.json())
-            .then((artist) => {
-                console.log(artist);
-                updateModel.updateArtists();
-         })
-
-              .catch((error) =>{     
-            console.log(error);
-            console.log('det funkar inte');
-            View.errorMessage();
-       });
-    },
-
-    postAlbum(album) {
-        return fetch('https://folksa.ga/api/albums?key=flat_eric', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(album)
-        })
-
-            .then((response) => response.json())
-            .then((albums) => {
-                console.log('New album:' , albums);
-                selectedAlbum = Controller.getAlbumId(albums);
-                selectedArtist = Controller.getArtistId(albums);
-        })
-
-            .catch((error) =>{     
-            console.log(error);
-            console.log('det funkar inte');
-            View.errorMessage();
-       });
-
-    },
-
-    postTrack(track) { 
-        return fetch('https://folksa.ga/api/tracks?key=flat_eric',{
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(track)
-        })
-
-       .then((response) => response.json())
-       .then((postedTrack) => {
-            console.log('One track:', postedTrack);
-        })
-
-        .catch((error) =>{     
-            console.log(error);
-            console.log('det funkar inte');
-            View.errorMessage();
-       });
-    },
-
-    postPlaylist(playlist) {
-        return fetch('https://folksa.ga/api/playlists?key=flat_eric',{
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(playlist)
-        })
-        .then((response) => response.json())
-        .then((playlist) => {
-            console.log(playlist);
-        })
-
-         .catch((error) =>{     
-            console.log(error);
-            console.log('det funkar inte');
-            View.errorMessage();
-       });
-    },
-    
-      getPlaylistComment(playlistID){
-          let playlistid = playlistID;
-          
-          let comment = {
-          playlist: playlistid,
-          body: commentValue,
-          username: "The commenter"
-        }
-          
-         postModel.postCommentToPlaylist(playlistid, comment)
-      },
-    
-    
-    postCommentToPlaylist(playlistid, comment) {
-        return fetch(`https://folksa.ga/api/playlists/${playlistid}/comments?key=flat_eric`,{
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(comment)
-        })
-        .then((response) => response.json())
-        .then((playlist) => {
-        console.log(playlist);
-      })
-        .catch((error) =>{     
-            console.log(error);
-            console.log('det funkar inte');
-            View.errorMessage();
-       });
-    },
-    
-    playlistRating(playlist) {
-        let playlistID = playlist; 
-        let vote = ratingValue;
-        postModel.voteOnPlaylist(playlistID, vote);
-    },
-
-   voteOnPlaylist(playlistID, vote){
-        return fetch(`https://folksa.ga/api/playlists/${playlistID}/vote?key=flat_eric`, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ rating: vote })
-        })
-        .then((response) => response.json())
-        .then((playlist) => {
-            console.log(playlist);
-        });
+            .then((playlist) => {
+                console.log('new track to playlist:', playlist);
+            });
     }
 };
 
 
-
 const View = {
 
-    errorMessage (){
-            const errorMessageContainer = document.getElementById('errorMessage');
-            const errorMessage = document.getElementById('errorText');
-            errorMessage.innerText = 'Something went wrong, please try again!';
-            errorMessageContainer.appendChild(errorMessage);
+    errorMessage() {
+        const errorMessageContainer = document.getElementById('errorMessage');
+        const errorMessage = document.getElementById('errorText');
+        errorMessage.innerText = 'Something went wrong, please try again!';
+        errorMessageContainer.appendChild(errorMessage);
     },
 
 
     getinputName() {
-       let getinputName = document.getElementById('name').value;
-       return getinputName;
+        let getinputName = document.getElementById('name').value;
+        return getinputName;
     },
 
     getinputGenre() {
-       let getinputGenre = document.getElementById('genre').value;
-       return getinputGenre;
+        let getinputGenre = document.getElementById('genre').value;
+        return getinputGenre;
     },
 
     albumTitle() {
-     let albumTitle = document.getElementById('albumTitle').value;
-     return albumTitle;
+        let albumTitle = document.getElementById('albumTitle').value;
+        return albumTitle;
     },
 
     albumReleaseDate() {
-     let albumReleaseDate = document.getElementById('albumRelease').value;
-     return albumReleaseDate;
+        let albumReleaseDate = document.getElementById('albumRelease').value;
+        return albumReleaseDate;
     },
 
     albumGenre() {
-     let albumGenre = document.getElementById('albumGenre').value;
-     return albumGenre;
+        let albumGenre = document.getElementById('albumGenre').value;
+        return albumGenre;
     },
 
     albumTrack() {
-     let albumTrack = document.getElementById('albumTrack').value;
-     return albumTrack;
+        let albumTrack = document.getElementById('albumTrack').value;
+        return albumTrack;
     },
 
     getinputPlaylist() {
-       let getinputPlaylist = document.getElementById('createdPlaylist').value;
-       return getinputPlaylist;
+        let getinputPlaylist = document.getElementById('createdPlaylist').value;
+        return getinputPlaylist;
 
     },
 
     getinputCreatedBy() {
-       let getinputCreatedBy = document.getElementById('createdBy').value;
-       return getinputCreatedBy;
+        let getinputCreatedBy = document.getElementById('createdBy').value;
+        return getinputCreatedBy;
 
     },
-    
 
     input: document.getElementById("myInput"),
 
@@ -677,27 +644,26 @@ const View = {
 
     input2: document.getElementById("myInput2"),
 
-    filterArtists () {
+    filterArtists() {
         View.input.addEventListener('keyup', function() {
-            
+
             let filter, ul, li, i;
             filter = View.input.value.toUpperCase();
 
             ul = document.getElementById("ul");
             li = ul.getElementsByTagName("li");
-            
+
             for (i = 0; i < li.length; i++) {
                 if (li[i].innerText.toUpperCase().indexOf(filter) > -1) {
                     li[i].style.display = "block";
                 } else {
                     li[i].style.display = "none";
                 }
-             
             } //End of loop
         })
     },
 
-    filterAlbums () {
+    filterAlbums() {
         View.input1.addEventListener('keyup', function() {
             console.log('all');
             let filter, ul, li, i;
@@ -705,38 +671,36 @@ const View = {
 
             ul = document.getElementById("albumslist");
             li = ul.getElementsByTagName("li");
-            
+
             for (i = 0; i < li.length; i++) {
                 if (li[i].innerText.toUpperCase().indexOf(filter) > -1) {
                     li[i].style.display = "block";
                 } else {
                     li[i].style.display = "none";
                 }
-             
             } //End of loop
         })
     },
 
-    filterTracks () {
-        View.input2.addEventListener('keyup', function() {            
+    filterTracks() {
+        View.input2.addEventListener('keyup', function() {
             let filter, ul, li, a, i;
             filter = View.input2.value.toUpperCase();
 
             ul = document.getElementById("tracklist");
             li = ul.getElementsByTagName("li");
-            
+
             for (i = 0; i < li.length; i++) {
                 if (li[i].innerText.toUpperCase().indexOf(filter) > -1) {
                     li[i].style.display = "block";
                 } else {
                     li[i].style.display = "none";
                 }
-             
             } //End of loop
         })
     },
 
-   displayArtistList(artists) {
+    displayArtistList(artists) {
 
         for (let artist of artists) {
             const artistList = document.getElementById('artists');
@@ -756,7 +720,7 @@ const View = {
                 View.addAlbumToArtistId(this);
             });
 
-            deleteButton.addEventListener('click', function(){
+            deleteButton.addEventListener('click', function() {
                 deleteDataModel.deleteArtist(clickOnArtist.id);
 
             });
@@ -767,9 +731,9 @@ const View = {
             li.appendChild(deleteButton);
 
         } //End of loop
-         View.filterArtists();
+        View.filterArtists();
     },
- 
+
 
     addAlbumToArtistId(element) {
         const addAlbumDiv = document.getElementById('addAlbum');
@@ -784,37 +748,37 @@ const View = {
     },
 
     displayTracksList(tracks) {
-            for (let track of tracks) {
-                const tracksList = document.getElementById('tracks');
-                const ul = document.getElementById('tracklist');
-                const li = document.createElement('li');
-                const clickOnTrack = document.createElement('a');
-                const deleteTrack = document.createElement('button');
-                deleteTrack.className = 'deleteTrack';
-                deleteTrack.innerText = 'Delete Track';
-                clickOnTrack.id = track._id;
-                clickOnTrack.dataset.id = track._id;
-                clickOnTrack.innerText = track.title;
-                clickOnTrack.trackId = track._id;
-                li.classList.add('trackContainer');
-                clickOnTrack.addEventListener('click', function() {
-                    this.dataset.id;
-                    this.innerText;
-                    this.trackId;
-                    View.addTrackToPlaylist(this);
-                });
+        for (let track of tracks) {
+            const tracksList = document.getElementById('tracks');
+            const ul = document.getElementById('tracklist');
+            const li = document.createElement('li');
+            const clickOnTrack = document.createElement('a');
+            const deleteTrack = document.createElement('button');
+            deleteTrack.className = 'deleteTrack';
+            deleteTrack.innerText = 'Delete Track';
+            clickOnTrack.id = track._id;
+            clickOnTrack.dataset.id = track._id;
+            clickOnTrack.innerText = track.title;
+            clickOnTrack.trackId = track._id;
+            li.classList.add('trackContainer');
+            clickOnTrack.addEventListener('click', function() {
+                this.dataset.id;
+                this.innerText;
+                this.trackId;
+                View.addTrackToPlaylist(this);
+            });
 
-                deleteTrack.addEventListener('click', function(){
-                    deleteDataModel.deleteTrack(clickOnTrack.id);
-                });
+            deleteTrack.addEventListener('click', function() {
+                deleteDataModel.deleteTrack(clickOnTrack.id);
+            });
 
-                tracksList.appendChild(ul);
-                ul.appendChild(li);
-                li.appendChild(clickOnTrack);
-                li.appendChild(deleteTrack);
-            } //End of loop
+            tracksList.appendChild(ul);
+            ul.appendChild(li);
+            li.appendChild(clickOnTrack);
+            li.appendChild(deleteTrack);
+        } //End of loop
 
-            View.filterTracks();
+        View.filterTracks();
     },
 
     addPlaylist: document.getElementById('playlistButton'),
@@ -830,104 +794,104 @@ const View = {
     displayAlbumList(albums) {
         for (let album of albums) {
             for (let artist of album.artists) {
-            const albumList = document.getElementById('albums');
+                const albumList = document.getElementById('albums');
                 const ul = document.getElementById('albumslist');
-                const li = document.createElement('li'); 
-                    li.id = album._id;
-                    li.dataset.id = album._id;
-                    li.innerText = album.title;
-                    li.artistId = album.artists;     
-                      
-            const albumCard = document.createElement('div');
-            const albumCardAction = document.createElement('div');
-            
-            const clickOnAlbum = document.createElement('a');
-            const albumArtist = document.createElement('span');
+                const li = document.createElement('li');
+                li.id = album._id;
+                li.dataset.id = album._id;
+                li.innerText = album.title;
+                li.artistId = album.artists;
 
-            const showAlbumAction = document.createElement('button');
-            const deleteAlbum = document.createElement('button');
-            const updateAlbum = document.createElement('button');
+                const albumCard = document.createElement('div');
+                const albumCardAction = document.createElement('div');
 
-            albumCard.className = 'albumCard';
-            albumCardAction.className = 'albumCardAction';
+                const clickOnAlbum = document.createElement('a');
+                const albumArtist = document.createElement('span');
 
-            showAlbumAction.className = 'showAlbumAction';
-            deleteAlbum.className = 'deleteAlbum';
-            updateAlbum.className = 'updateAlbum';
+                const showAlbumAction = document.createElement('button');
+                const deleteAlbum = document.createElement('button');
+                const updateAlbum = document.createElement('button');
 
-            showAlbumAction.innerText = 'Edit';
-            updateAlbum.innerText = 'Update'; 
-            deleteAlbum.innerText ='Delete Album';
-            albumArtist.innerText = artist.name;
+                albumCard.className = 'albumCard';
+                albumCardAction.className = 'albumCardAction';
 
-            const coverAlbum = document.createElement('img');
-            coverAlbum.className = 'coverAlbum';
-            const coverAlbumSrc = album.coverImage;
-            coverAlbum.setAttribute('onerror', 'src="https://upload.wikimedia.org/wikipedia/en/d/dd/Ray_of_Light_Madonna.png"');
-            coverAlbum.setAttribute('src', coverAlbumSrc);
+                showAlbumAction.className = 'showAlbumAction';
+                deleteAlbum.className = 'deleteAlbum';
+                updateAlbum.className = 'updateAlbum';
 
-            let inputChangeAlbumTitle = document.createElement('input');
-            const inputChangeAlbumLabel = document.createElement('label');
-            inputChangeAlbumTitle.setAttribute('type', 'text');
-            inputChangeAlbumTitle.setAttribute('placeholder', 'Change title here');
-            inputChangeAlbumLabel.innerText = 'Update album title';
+                showAlbumAction.innerText = 'Edit';
+                updateAlbum.innerText = 'Update';
+                deleteAlbum.innerText = 'Delete Album';
+                albumArtist.innerText = artist.name;
 
-            clickOnAlbum.id = album._id;
-            clickOnAlbum.dataset.id = album._id;
-            clickOnAlbum.innerText = album.title;
-            clickOnAlbum.artistId = album.artists;
+                const coverAlbum = document.createElement('img');
+                coverAlbum.className = 'coverAlbum';
+                const coverAlbumSrc = album.coverImage;
+                coverAlbum.setAttribute('onerror', 'src="https://upload.wikimedia.org/wikipedia/en/d/dd/Ray_of_Light_Madonna.png"');
+                coverAlbum.setAttribute('src', coverAlbumSrc);
 
+                let inputChangeAlbumTitle = document.createElement('input');
+                const inputChangeAlbumLabel = document.createElement('label');
+                inputChangeAlbumTitle.setAttribute('type', 'text');
+                inputChangeAlbumTitle.setAttribute('placeholder', 'Change title here');
+                inputChangeAlbumLabel.innerText = 'Update album title';
 
-            li.addEventListener('click', function() {
-                this.dataset.id;
-                this.artistId;
-                this.innerText;
-                View.registerAlbumId(this);
-            });
-
-            clickOnAlbum.addEventListener('click', function() {
-                this.dataset.id;
-                this.artistId;
-                this.innerText;
-                View.registerAlbumId(this);
-            });
-
-            deleteAlbum.addEventListener('click', function() {
-                deleteDataModel.deleteAlbum(clickOnAlbum.id);
-            });
-
-            updateAlbum.addEventListener('click', function() {
-                changedAlbumTitle = inputChangeAlbumTitle.value;
-                updateModel.changeAlbumTitle(clickOnAlbum.id);
-            });
-
-            albumCardAction.style.display = "none";
-
-            showAlbumAction.addEventListener('click', function(){
-                if (albumCardAction.style.display === "none"){
-                    albumCardAction.style.display = "block";
-                } else {
-                    albumCardAction.style.display = "none";
-                }
-            })
+                clickOnAlbum.id = album._id;
+                clickOnAlbum.dataset.id = album._id;
+                clickOnAlbum.innerText = album.title;
+                clickOnAlbum.artistId = album.artists;
 
 
-            albumList.appendChild(ul);
-            ul.appendChild(li);
+                li.addEventListener('click', function() {
+                    this.dataset.id;
+                    this.artistId;
+                    this.innerText;
+                    View.registerAlbumId(this);
+                });
 
-            albumContainer.appendChild(albumCard);
+                clickOnAlbum.addEventListener('click', function() {
+                    this.dataset.id;
+                    this.artistId;
+                    this.innerText;
+                    View.registerAlbumId(this);
+                });
 
-            albumCard.appendChild(coverAlbum);
-            albumCard.appendChild(clickOnAlbum);
-            albumCard.appendChild(albumArtist);
-                
-            albumCard.appendChild(showAlbumAction);
-            albumCard.appendChild(albumCardAction);
+                deleteAlbum.addEventListener('click', function() {
+                    deleteDataModel.deleteAlbum(clickOnAlbum.id);
+                });
 
-            albumCardAction.appendChild(inputChangeAlbumLabel);
-            albumCardAction.appendChild(inputChangeAlbumTitle);
-            albumCardAction.appendChild(updateAlbum);
-            albumCardAction.appendChild(deleteAlbum);
+                updateAlbum.addEventListener('click', function() {
+                    changedAlbumTitle = inputChangeAlbumTitle.value;
+                    updateModel.changeAlbumTitle(clickOnAlbum.id);
+                });
+
+                albumCardAction.style.display = "none";
+
+                showAlbumAction.addEventListener('click', function() {
+                    if (albumCardAction.style.display === "none") {
+                        albumCardAction.style.display = "block";
+                    } else {
+                        albumCardAction.style.display = "none";
+                    }
+                })
+
+
+                albumList.appendChild(ul);
+                ul.appendChild(li);
+
+                albumContainer.appendChild(albumCard);
+
+                albumCard.appendChild(coverAlbum);
+                albumCard.appendChild(clickOnAlbum);
+                albumCard.appendChild(albumArtist);
+
+                albumCard.appendChild(showAlbumAction);
+                albumCard.appendChild(albumCardAction);
+
+                albumCardAction.appendChild(inputChangeAlbumLabel);
+                albumCardAction.appendChild(inputChangeAlbumTitle);
+                albumCardAction.appendChild(updateAlbum);
+                albumCardAction.appendChild(deleteAlbum);
 
             }
         } //End of loop
@@ -939,230 +903,204 @@ const View = {
     registerAlbumId(album) {
         console.log('Album Id:', album.id);
         console.log('Artist Id of clicked album:', album.artistId);
-
-        selectedArtist = album.artistId;
+        let artistsId =
+            selectedArtist = album.artistId;
         selectedAlbum = album.id;
 
-        Controller.registerTrackTitleToAlbumClickHandler(selectedAlbum,selectedArtist);
+        for (artist of selectedArtist) {
+            let artistId = artist._id;
+            console.log(artistId);
+            Controller.registerTrackTitleToAlbumClickHandler(artistId);
+        }
     },
-
-     getCommentofPlaylist(comments){
-       for(comment of comments){
-        console.log(comment);
-        console.log(comment.body);
-        console.log(comment.username);
-        console.log(comment._id);
-       }
-            
-     },
 
     showAllplaylists: document.getElementById("showAllplaylists"),
 
-     displayPlayLists(playlists) {
-        
+    displayPlayLists(playlists) {
+
         const playlistContainer = document.getElementById('playlistContainer');
         const table = document.createElement('table');
         table.className = "tablePlaylist";
         playlistContainer.appendChild(table);
-        
+
         let thPlaylist = document.createElement('th');
         thPlaylist.innerText = 'Playlist';
-        
+
         let thCreatedBy = document.createElement('th');
         thCreatedBy.innerText = 'Created by';
-        
+
         let thRating = document.createElement('th');
         thRating.innerText = 'Rating';
-        
+
         let thShowMore = document.createElement('th');
         thShowMore.innerText = 'Show more';
-        
+
         table.appendChild(thPlaylist);
         table.appendChild(thCreatedBy);
         table.appendChild(thRating);
         table.appendChild(thShowMore);
-        
 
-        
-        //showAllplaylists.addEventListener('click', function(){
-            for (let playlist of playlists) {
-                const playlistContainer = document.getElementById('playlistContainer');
-//              const ul = document.getElementById('playList');
-//                const li = document.createElement('li');
-                let inputChangePlaylistTitle = document.createElement('input');
-                    inputChangePlaylistTitle.setAttribute('type', 'text');
-                
-                let rating = document.createElement('input');
-                    rating.setAttribute('type', 'number');
-                    rating.setAttribute('max', 10);
-                    rating.setAttribute('min', 0);
-                    rating.setAttribute('placeholder', 'rate (1-10)');
-                
-                let ratingButton = document.createElement('button');
-                    ratingButton.innerText = 'Vote';
-                
-                let inputComment = document.createElement('input');
-                inputComment.setAttribute('type', 'text');
-                const inputButton = document.createElement('button');
-                inputButton.innerText = "Comment";
-                
-                const clickOnPlaylist = document.createElement('button');
-                clickOnPlaylist.className = 'clickOnPlaylist';
-                
-                const deletePlaylist = document.createElement('button');
-                const updatePlaylist = document.createElement('button');
-                const showMorePlaylist = document.createElement('button');
-                      showMorePlaylist.className = 'showMorePlaylist';
-                
-                //Button names
-                deletePlaylist.innerText ='Delete Playlist';
-                updatePlaylist.innerText = 'Update Playlist'; 
-                showMorePlaylist.innerHTML = 'View songs';
-                
-                let singlePlaylistContainer = document.createElement('div');
-                singlePlaylistContainer.className = "singlePlaylistContainer";
+        for (let playlist of playlists) {
+            const playlistContainer = document.getElementById('playlistContainer');
 
-                let viewComments = document.createElement('button');
-                    viewComments.id = playlist._id;
-                
-                clickOnPlaylist.id = playlist._id;
-                clickOnPlaylist.dataset.id = playlist._id;
-                clickOnPlaylist.innerText = '+';
-                clickOnPlaylist.createdBy = playlist.createdBy;     
-                clickOnPlaylist.trackId = selectTrack;
+            let inputChangePlaylistTitle = document.createElement('input');
+            inputChangePlaylistTitle.setAttribute('type', 'text');
+            inputChangePlaylistTitle.setAttribute('placeholder', 'New title')
 
-                //li.classList.add('playlistContainer');
-                
-                clickOnPlaylist.addEventListener('click', function() {
-                    this.trackId;
-                    this.dataset.id;
-                    this.innerText;
-                    Controller.trackArray(this);  
-             
-                });
+            let rating = document.createElement('input');
+            rating.setAttribute('type', 'number');
+            rating.setAttribute('max', 10);
+            rating.setAttribute('min', 0);
+            rating.setAttribute('placeholder', 'Rate (1-10)');
 
-                inputButton.addEventListener('click', function(){
-                    commentValue = inputComment.value
-                    postModel.getPlaylistComment(clickOnPlaylist.dataset.id);
-                });
+            let ratingButton = document.createElement('button');
+            ratingButton.innerText = 'Vote';
 
-                deletePlaylist.addEventListener('click', function() {
-                    deleteDataModel.deletePlaylist(clickOnPlaylist.id);
-                });
-                
-                updatePlaylist.addEventListener('click', function() {
-                    changedPlaylistTitle = inputChangePlaylistTitle.value;
-                    updateModel.changePlaylistTitle(clickOnPlaylist.id);
-                });
+            let inputComment = document.createElement('textarea');
+            inputComment.setAttribute('type', 'text');
+            inputComment.setAttribute('rows', 8);
+            inputComment.setAttribute('cols', 50);
+            inputComment.setAttribute('placeholder', 'Comment here..')
+            let inputCommentBy = document.createElement('input');
+            inputCommentBy.setAttribute('type', 'text');
+            inputCommentBy.setAttribute('placeholder', 'Comment by:')
+            const inputButton = document.createElement('button');
+            inputButton.innerText = "Comment";
 
-                ratingButton.addEventListener('click', function(){
-                    ratingValue = rating.value;
-                    postModel.playlistRating(clickOnPlaylist.dataset.id);
-                });
-               
-               viewComments.addEventListener('click', function(){
-                    FetchModel.fetchCommentsforSpecifikPlaylist(this);                        
-                   });
+            const clickOnPlaylist = document.createElement('button');
+            clickOnPlaylist.className = 'clickOnPlaylist';
 
-                
-                
-                
-                function renderHtmlSinglePlaylist () {
-                    singlePlaylistContainer.innerHTML = `
-                        <h4>Tracks</h4>`;
-                    
-                    for(let track of playlist.tracks) {
-                        
-                        for(let artist of track.artists) {
-                            
-                            singlePlaylistContainer.innerHTML += `
-                            
-                            <p>${artist.name} - ${track.title}</p>
-                            `;
-                        }
+            const deletePlaylist = document.createElement('button');
+            const updatePlaylist = document.createElement('button');
+            const showMorePlaylist = document.createElement('button');
+            showMorePlaylist.className = 'showMorePlaylist';
+
+            //Button names
+            deletePlaylist.innerText = 'Delete Playlist';
+            updatePlaylist.innerText = 'Update Playlist';
+            showMorePlaylist.innerHTML = 'View songs';
+
+            let singlePlaylistContainer = document.createElement('div');
+            singlePlaylistContainer.className = "singlePlaylistContainer";
+
+            let viewComments = document.createElement('button');
+            viewComments.id = playlist._id;
+            viewComments.innerText = 'View all comments';
+
+            clickOnPlaylist.id = playlist._id;
+            clickOnPlaylist.dataset.id = playlist._id;
+            clickOnPlaylist.innerText = '+';
+            clickOnPlaylist.createdBy = playlist.createdBy;
+            clickOnPlaylist.trackId = selectTrack;
+
+            clickOnPlaylist.addEventListener('click', function() {
+                this.trackId;
+                this.dataset.id;
+                this.innerText;
+                Controller.trackArray(this);
+
+            });
+
+            inputButton.addEventListener('click', function() {
+                commentValue = inputComment.value
+                postModel.getPlaylistComment(clickOnPlaylist.dataset.id);
+            });
+
+            deletePlaylist.addEventListener('click', function() {
+                deleteDataModel.deletePlaylist(clickOnPlaylist.id);
+            });
+
+            updatePlaylist.addEventListener('click', function() {
+                changedPlaylistTitle = inputChangePlaylistTitle.value;
+                updateModel.changePlaylistTitle(clickOnPlaylist.id);
+            });
+
+            ratingButton.addEventListener('click', function() {
+                ratingValue = rating.value;
+                postModel.playlistRating(clickOnPlaylist.dataset.id);
+            });
+
+            viewComments.addEventListener('click', function() {
+                FetchModel.fetchCommentsforSpecifikPlaylist(this);
+            });
+
+
+            function renderHtmlSinglePlaylist() {
+                singlePlaylistContainer.innerHTML = `
+                            <h4>Tracks</h4>`;
+
+                for (let track of playlist.tracks) {
+
+                    for (let artist of track.artists) {
+
+                        singlePlaylistContainer.innerHTML += `
+                                
+                                <p>${artist.name} - ${track.title}</p>
+                                `;
+                    }
+                }                  
+
+                singlePlaylistContainer.appendChild(deletePlaylist);
+                singlePlaylistContainer.appendChild(updatePlaylist);
+                singlePlaylistContainer.appendChild(inputChangePlaylistTitle);
+                singlePlaylistContainer.appendChild(rating);
+                singlePlaylistContainer.appendChild(ratingButton);
+
+                singlePlaylistContainer.appendChild(inputComment);
+                singlePlaylistContainer.appendChild(inputCommentBy);
+                singlePlaylistContainer.appendChild(inputButton);
+                singlePlaylistContainer.appendChild(viewComments);
+            };
+
+
+            for (var i = 0; i < 1; i++) {
+
+                function sumOfRatings() {
+                    let ratingOfPlaylist = playlist.ratings;
+                    var ratingSum = 0;
+                    for (var i = 0; i < ratingOfPlaylist.length; i++) {
+                        ratingSum += ratingOfPlaylist[i];
                     }
 
-                      /*  for(comment of comments){
-                                console.log(comment);
-                                console.log(comment.body);
-                                console.log(comment.username);
-                                console.log(comment._id);
-                            singlePlaylistContainer.innerHTML += `
-                            <p>Comments: ${comment.body}</p>
-                            `;
-                        }*/
-               
+                    return ratingSum;
+                };
 
-                    viewComments.innerText = 'View all comments';
-                    singlePlaylistContainer.appendChild(deletePlaylist);
-                    singlePlaylistContainer.appendChild(updatePlaylist);
-                    singlePlaylistContainer.appendChild(inputChangePlaylistTitle);
-                    singlePlaylistContainer.appendChild(rating);
-                    singlePlaylistContainer.appendChild(ratingButton);
-           
-                    singlePlaylistContainer.appendChild(inputComment);
-                    singlePlaylistContainer.appendChild(inputButton);
-                    singlePlaylistContainer.appendChild(viewComments);
-                   
-                   //WIP
-                  
-                   
-                }; 
-                
+                let tr = document.createElement('tr');
+                table.appendChild(tr);
+                let playlistTd = document.createElement('td');
+                playlistTd.innerText = playlist.title;
+                let createdByTd = document.createElement('td');
+                createdByTd.innerText = playlist.createdBy;
+                let ratingsTd = document.createElement('td');
+                ratingsTd.innerText = sumOfRatings();
+                let showmore = document.createElement('td');
 
 
-       
-        for (var i = 0; i<1; i++) { 
+                createdByTd.innerText = playlist.createdBy;
 
-                function sumOfRatings(){
+                tr.appendChild(playlistTd);
+                playlistTd.appendChild(clickOnPlaylist);
+                tr.appendChild(createdByTd);
+                tr.appendChild(ratingsTd);
+                tr.appendChild(showmore);
 
-                        let ratingOfPlaylist = playlist.ratings;
-                        var ratingSum = 0;
-                        for(var i=0; i < ratingOfPlaylist.length; i++){
-                            ratingSum += ratingOfPlaylist[i];
-                        }
+                showmore.appendChild(showMorePlaylist);
+                table.appendChild(singlePlaylistContainer);
 
-                         return ratingSum; 
-                 };
-            
-            let tr = document.createElement('tr'); 
-            table.appendChild(tr); 
-            let playlistTd = document.createElement('td');
-            playlistTd.innerText = playlist.title;
-            let createdByTd = document.createElement('td');
-            createdByTd.innerText = playlist.createdBy;
-            let ratingsTd = document.createElement('td');
-            ratingsTd.innerText = sumOfRatings();
-            let showmore = document.createElement('td');
-
-            
-            createdByTd.innerText = playlist.createdBy;
-            
-            tr.appendChild(playlistTd);
-            playlistTd.appendChild(clickOnPlaylist);
-            tr.appendChild(createdByTd);
-            tr.appendChild(ratingsTd);
-            tr.appendChild(showmore);
-
-    
-            
-            showmore.appendChild(showMorePlaylist);
-            table.appendChild(singlePlaylistContainer);
-           
-        }
+            }
             singlePlaylistContainer.style.display = "none";
-                
-            showMorePlaylist.addEventListener('click', function(){
-                if (singlePlaylistContainer.style.display === "none"){
+
+            showMorePlaylist.addEventListener('click', function() {
+                if (singlePlaylistContainer.style.display === "none") {
                     singlePlaylistContainer.style.display = "block";
 
                 } else {
                     singlePlaylistContainer.style.display = "none";
                 }
             })
-                
-                 renderHtmlSinglePlaylist();
-            } //End of loop
+
+            renderHtmlSinglePlaylist();
+        } //End of loop
     },
 };
 
