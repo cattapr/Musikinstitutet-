@@ -775,7 +775,9 @@ const View = {
                 li.appendChild(clickOnTrack);
                 li.appendChild(deleteTrack);
             } //End of loop
-        })  
+        }) 
+        
+
     },
 
     addPlaylist: document.getElementById('playlistButton'),
