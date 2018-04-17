@@ -9,7 +9,7 @@ let ratingValue = '';
 const FetchModel = {
 
     fetchArtists() {
-        return fetch('https://folksa.ga/api/artists?key=flat_eric&limit=200')
+        return fetch('https://folksa.ga/api/artists?key=flat_eric&limit=50')
             .then((response) => response.json())
             .then((artists) => {
                 console.log(artists);
@@ -26,7 +26,7 @@ const FetchModel = {
     },
 
     fetchAlbums() {
-        return fetch('https://folksa.ga/api/albums?key=flat_eric&limit=200&populateArtists=true')
+        return fetch('https://folksa.ga/api/albums?key=flat_eric&limit=20&populateArtists=true')
            .then((response) => response.json())
            .then((albums) => {
                 console.log('Albums', albums);
@@ -40,7 +40,7 @@ const FetchModel = {
 
 
     fetchTracks(){
-        return fetch('https://folksa.ga/api/tracks?key=flat_eric&limit=1000')
+        return fetch('https://folksa.ga/api/tracks?key=flat_eric&limit=50')
            .then((response) => response.json())
            .then((tracks) => {
                View.displayTracksList(tracks);    
@@ -52,7 +52,7 @@ const FetchModel = {
     },
 
     fetchPlaylist(){
-        return fetch('https://folksa.ga/api/playlists?key=flat_eric&limit=1000')
+        return fetch('https://folksa.ga/api/playlists?key=flat_eric&limit=10')
            .then((response) => response.json())
            .then((playlists) => {
                console.log('playlist:', playlists);
@@ -66,7 +66,7 @@ const FetchModel = {
     },
     
     fetchComments(){
-        return fetch(`https://folksa.ga/api/comments?key=flat_eric&limit=1000`)
+        return fetch(`https://folksa.ga/api/comments?key=flat_eric`)
             .then((response) => response.json())
             .then((comments) => {
                 console.log('All comments: ', comments);
@@ -110,7 +110,7 @@ const FetchModel = {
     },
 
     updateArtists() {
-        return fetch('https://folksa.ga/api/artists?key=flat_eric&sort=asc&limit=200')
+        return fetch('https://folksa.ga/api/artists?key=flat_eric&sort=asc&limit=50')
            .then((response) => response.json())
            .then((artists) => {
                 console.log('update:', artists);
