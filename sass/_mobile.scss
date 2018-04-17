@@ -53,7 +53,7 @@ a, button {
 }
 
 
-#ul li {
+#ul li{
     display: none;
 }
 
@@ -77,7 +77,6 @@ th, td {
 }
 
 .singlePlaylistContainer {
-    background-color: #eee;
     width: 100%;
     display: none;
 }
@@ -87,6 +86,21 @@ th, td {
     
     .uploadContainerHeading {
         text-align: center;
+    }
+    
+    a:hover {
+        color: #405BFF;
+    }
+    
+    .deleteButtonArtist {
+        color: #990000;
+        border: none;
+        
+        &:hover {
+            color: #fff;
+            background-color: #990000;
+            border-radius: 4px; 
+        }
     }
 }
 
@@ -100,8 +114,8 @@ th, td {
         width: 100%;
         padding: 16px;
         margin: 5px 0 22px 0;
-        display: inline-block;
         border: none;
+        display: inline-block;
         background: #f1f1f1;
     }
 
@@ -122,6 +136,11 @@ th, td {
         padding: 10px 20px;
         border-radius: 4px;
         border: 1px solid #007884;
+        
+        &:hover {
+            color: #fff;
+            background-color: #007884;
+        }
     }
 
 }
@@ -146,6 +165,50 @@ th, td {
     }
 
 }
+
+.trackContainer {
+    
+    margin: 12px 0;
+    
+    ul li{
+       list-style: none; 
+    }
+    
+    .showAllTracks {
+        color: #007884;
+        font-weight: 500;
+        padding: 10px 20px;
+        margin: auto;
+        display: block;
+        border-radius: 4px;
+        border: 1px solid #007884;
+        
+        &:hover {
+            color: #fff;
+            background-color: #007884;
+        }
+    }
+    
+    a {
+        cursor: pointer;
+    
+        &:hover {
+           color: #405BFF;
+        }
+    }
+    
+    .deleteTrack {
+        color: #990000;
+        border: none;
+        
+        &:hover {
+            color: #fff;
+            background-color: #990000;
+            border-radius: 4px; 
+        }
+    }
+}
+
 
 .albumContainer {
     width: 80%;
@@ -212,8 +275,6 @@ th, td {
         padding: 10px 20px;
         border-radius: 4px;
     }
-    
-
     
     .updateAlbum {
         color: #fff;
