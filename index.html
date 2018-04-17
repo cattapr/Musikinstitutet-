@@ -13,30 +13,41 @@
             <div class="headerText">
                 <h1>Musikinstitutet</h1>
                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Laboriosam, quia? Cupiditate quidem maiores nostrum tempora esse nam atque.</p>
-                <button class="toPlaylistButton">Create a playlist</button>
-                <button class="toSubmitButton">Submit music</button>
+                <a href="#addPlayList"><button class="toPlaylistButton">Create a playlist</button></a>
+                <a href="#submitMusic"><button class="toSubmitButton">Submit music</button></a>
             </div>
         </div>
     </header>
     
-    <div class="uploadContainer">
+    <div class="listContainer">
+        <div class="albumWrap">
+            <h2 class="albumHeader">Latest albums</h2>
+            <div class="albumContainer" id="albumContainer"></div>
+        </div>
+        <div class="playlistContainer" id="playlistContainer">
+            <h2>Latest playlists</h2>
+            <ul id="playList"></ul>
+        </div>
+    </div>
+    
+    <div class="uploadContainer" id="submitMusic">
         <h2 class="uploadContainerHeading">Upload your music</h2>
         <div class="addArtist">
         	<div id="errorMessage"><p id="errorText"><p></div>
         	<div id="emptyInput"><p id="error"><p></div>
             <h3>Add artist</h3>
-                <label for="artistName">Artist name</label>
-                <input type="text" id="name" name="artistName"  placeholder="Artist name" required>
-                <label for="artistGenre">Genre</label>
-                <input type="text" id="genre" name="artistGenre" placeholder="genre" required>
-                <input type="submit" class="submitButton" id="submitButton" value="Submit">
+            <label for="artistName">Artist name</label>
+            <input type="text" id="name" name="artistName"  placeholder="Artist name" required>
+            <label for="artistGenre">Genre</label>
+            <input type="text" id="genre" name="artistGenre" placeholder="genre" required>
+            <input type="submit" class="submitButton" id="submitButton" value="Submit">
         </div> 
 
         <div class="addAlbum">
             <h3>Create album</h3>
             <label>Choose artist</label>
-            <div id="chooseArtistErrorMsg"><p id="errorMsgText"></p></div>
             <input type="text" id="myInput" placeholder="Search artist name" title="Search artist name">
+            <div id="chooseArtistErrorMsg"><p id="errorMsgText"></p></div>
             <div id="deleteAnArtist"></div>
             <div id="artists">
                 <ul id="ul"></ul>
@@ -56,7 +67,8 @@
 
         <div class="addTrack" id="addTrack">
             <h3>Add tracks</h3>
-            <input type="text" id="myInput1" placeholder="Search album name" title="Search artist name">
+            <label for="searchAlbums">Search albums</label>
+            <input type="text" id="myInput1" name="searchAlbums" placeholder="Search album name" title="Search artist name">
             <div id="albums">
                 <ul id="albumslist"></ul>
             </div>
@@ -70,7 +82,8 @@
 
         <div class="addPlaylist" id="addPlayList">
             <h3>Create Playlist</h3>
-            <input type="text" id="myInput2" placeholder="Search track name" title="Search artist name">
+            <label for="searchTrack">Search track</label>
+            <input type="text" id="myInput2" name="searchTrack" placeholder="Search track name" title="Search artist name">
             <div id="tracks">
                 <ul id="tracklist"></ul>
             </div>
@@ -82,15 +95,6 @@
            <button id="playlistButton">Add playlist +</button>    
         </div>
 	</div>
-    
-    <div class="listContainer">
-        <div class="playlistContainer" id="playlistContainer">
-            <ul id="playList"></ul>
-        </div>
-
-        <div class="albumContainer" id="albumContainer">
-        </div>
-    </div>
 
 	
 	<script src="js/main.js"></script>
