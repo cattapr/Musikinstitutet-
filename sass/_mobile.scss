@@ -7,6 +7,10 @@ body, html {
     -moz-osx-font-smoothing: grayscale;
 }
 
+a, button {
+    cursor: pointer;
+}
+
 .header {
     position: relative;
     z-index: 1;
@@ -53,9 +57,6 @@ body, html {
     display: none;
 }
 
-//.singlePlaylistContainer {
-//    display: none;
-//}
 table {
     width: 100%;
 }
@@ -170,30 +171,35 @@ th, td {
     
     a {
         font-weight: 500;
-        margin: 12px 4px 0;
-        padding-bottom: 12px;
+        margin: 8px 8px 0;
+        padding-bottom: 8px;
         display: block;
+        cursor: pointer;
+        
+        &:hover {
+            color: #405BFF;
+        }
     }
     
     span {
-        text-transform: uppercase;
         color: #ADB2B5;
-        font-size: 0.85em;
+        font-size: 0.9em;
         font-weight: 500;
+        margin-left: 8px;
+        padding-bottom: 8px;
         display: block;
-        border-bottom: 1px solid #eee;
-        margin-left: 4px;
     }
     
     .showAlbumAction {
+        color: #405BFF;
         font-weight: 500;
         font-size: 0.8em;
         border: 0;
-        border-bottom: 1px solid #000;
+        margin-top: 8px;
+        right: 8px;
+        bottom: 8px;
         display: block;
         position: absolute;
-        right: 8px;
-        margin-top: 8px;
     }
 }
 
