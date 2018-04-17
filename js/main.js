@@ -673,6 +673,10 @@ const View = {
 
     input: document.getElementById("myInput"),
 
+    input1: document.getElementById("myInput1"),
+
+    input2: document.getElementById("myInput2"),
+
     filterArtists () {
         View.input.addEventListener('keyup', function() {
             
@@ -680,6 +684,47 @@ const View = {
             filter = View.input.value.toUpperCase();
 
             ul = document.getElementById("ul");
+            li = ul.getElementsByTagName("li");
+            
+            for (i = 0; i < li.length; i++) {
+                if (li[i].innerText.toUpperCase().indexOf(filter) > -1) {
+                    li[i].style.display = "block";
+                } else {
+                    li[i].style.display = "none";
+                }
+             
+            } //End of loop
+        })
+    },
+
+    filterAlbums () {
+        View.input1.addEventListener('keyup', function() {
+            
+            let filter, ul, li, i;
+            filter = View.input1.value.toUpperCase();
+
+            ul = document.getElementById("ul");
+            li = ul.getElementsByTagName("li");
+            
+            for (i = 0; i < li.length; i++) {
+                if (li[i].innerText.toUpperCase().indexOf(filter) > -1) {
+                    li[i].style.display = "block";
+                } else {
+                    li[i].style.display = "none";
+                }
+             
+            } //End of loop
+        })
+    },
+
+    filterTracks () {
+        View.input2.addEventListener('keyup', function() {
+            console.log('filter');
+            
+            let filter, ul, li, a, i;
+            filter = View.input2.value.toUpperCase();
+
+            ul = document.getElementById("tracklist");
             li = ul.getElementsByTagName("li");
             
             for (i = 0; i < li.length; i++) {
@@ -741,14 +786,15 @@ const View = {
     },
 
 
-    showAllTracks: document.getElementById("showAllTracks"),
+    //showAllTracks: document.getElementById("showAllTracks"),
 
 
     displayTracksList(tracks) {
-        showAllTracks.addEventListener('click', function(){
+      //  showAllTracks.addEventListener('click', function(){
             for (let track of tracks) {
-                const trackContainer = document.getElementById('trackContainer');
-                const ul = document.getElementById('trackList');
+               // const trackContainer = document.getElementById('trackContainer');
+                const tracksList = document.getElementById('tracks');
+                const ul = document.getElementById('tracklist');
                 const li = document.createElement('li');
                 const clickOnTrack = document.createElement('a');
                 const deleteTrack = document.createElement('button');
@@ -770,12 +816,17 @@ const View = {
                     deleteDataModel.deleteTrack(clickOnTrack.id);
                 });
 
-                trackContainer.appendChild(ul);
+             
+               // trackContainer.appendChild(trackslist);
+                tracksList.appendChild(ul);
                 ul.appendChild(li);
                 li.appendChild(clickOnTrack);
                 li.appendChild(deleteTrack);
             } //End of loop
-        }) 
+
+            View.filterTracks();
+       // }) 
+        
         
 
     },
@@ -795,6 +846,7 @@ const View = {
             for (let artist of album.artists) {
             const albumCard = document.createElement('div');
             const albumCardAction = document.createElement('div');
+            
             const clickOnAlbum = document.createElement('a');
             const albumArtist = document.createElement('span');
 
@@ -873,6 +925,8 @@ const View = {
 
             }
         } //End of loop
+
+        View.filterAlbums();
     },
 
 
