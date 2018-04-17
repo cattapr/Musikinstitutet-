@@ -393,7 +393,7 @@ const Controller = {
         addTrackButton.onclick = function(){
             const errorMessage = document.getElementById('addTrackErrorMsg');
             let errorMessageText = document.getElementById('errorMsg');
-            errorMessageText.innerText = 'You need to choose an album or a playlist first to add a track!';
+            errorMessageText.innerText = 'You need to choose an album to add a new track!';
         }
     },
 
@@ -675,18 +675,20 @@ const View = {
 
     filterArtists () {
         View.input.addEventListener('keyup', function() {
+            
             let filter, ul, li, i;
             filter = View.input.value.toUpperCase();
+
             ul = document.getElementById("ul");
             li = ul.getElementsByTagName("li");
-
+            
             for (i = 0; i < li.length; i++) {
                 if (li[i].innerText.toUpperCase().indexOf(filter) > -1) {
                     li[i].style.display = "block";
                 } else {
                     li[i].style.display = "none";
-
                 }
+             
             } //End of loop
         })
     },
@@ -699,9 +701,8 @@ const View = {
             const li = document.createElement('li');
             const deleteButton = document.createElement('button');
             deleteButton.innerText = 'Delete';
-            const addToAlbum = document.createElement('button');
-            addToAlbum.innerText = 'Add to album';
-            const clickOnArtist = document.createElement('button');
+            deleteButton.className = 'deleteButtonArtist';
+            const clickOnArtist = document.createElement('a');
             clickOnArtist.id = artist._id;
             clickOnArtist.dataset.id = artist._id;
             clickOnArtist.innerText = artist.name;
@@ -721,7 +722,6 @@ const View = {
             ul.appendChild(li);
             li.appendChild(clickOnArtist);
             li.appendChild(deleteButton);
-            li.appendChild(addToAlbum);
 
         } //End of loop
          View.filterArtists();
@@ -750,8 +750,9 @@ const View = {
                 const trackContainer = document.getElementById('trackContainer');
                 const ul = document.getElementById('trackList');
                 const li = document.createElement('li');
-                const clickOnTrack = document.createElement('button');
+                const clickOnTrack = document.createElement('a');
                 const deleteTrack = document.createElement('button');
+                deleteTrack.className = 'deleteTrack';
                 deleteTrack.innerText = 'Delete Track';
                 clickOnTrack.id = track._id;
                 clickOnTrack.dataset.id = track._id;
@@ -944,6 +945,7 @@ const View = {
                 inputButton.innerText = "Comment";
                 
                 const clickOnPlaylist = document.createElement('button');
+                clickOnPlaylist.className = 'clickOnPlaylist';
                 
                 const deletePlaylist = document.createElement('button');
                 const updatePlaylist = document.createElement('button');
@@ -1086,6 +1088,7 @@ const View = {
             table.appendChild(singlePlaylistContainer);
            
         }
+            singlePlaylistContainer.style.display = "none";
                 
             showMorePlaylist.addEventListener('click', function(){
                 if (singlePlaylistContainer.style.display === "none"){
