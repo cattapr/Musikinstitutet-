@@ -330,8 +330,9 @@ const Controller = {
             let artistGenre = View.getinputGenre();
 
        if(artistName === "" || artistGenre === ""){
-        console.log("you need to fill in both fields!");
-
+        const errorContainer = document.getElementById('emptyInput');
+        let errorMessage = document.getElementById('error');
+         errorMessage.innerText = 'You need to fill in both fields!';
        }
 
        else {
