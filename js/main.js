@@ -6,9 +6,6 @@ let commentValue = '';
 let ratingValue = '';
 
 
-
-
-
 const FetchModel = {
 
     fetchArtists() {
@@ -736,10 +733,8 @@ const View = {
         albumButton.id = element.id;
         albumButton.dataset.id = element.id;
 
-        let artistHeading = document.createElement('h3');
+        let artistHeading = document.getElementById('artistHeading');
         artistHeading.innerText = element.innerText;
-
-        addAlbumDiv.appendChild(artistHeading);
 
         Controller.registerCreateAlbumClickHandler(albumButton);
     },
@@ -850,6 +845,16 @@ const View = {
         Controller.registerTrackTitleToAlbumClickHandler(selectedAlbum,selectedArtist);
     },
 
+     getCommentofPlaylist(comments){
+       for(comment of comments){
+        console.log(comment);
+        console.log(comment.body);
+        console.log(comment.username);
+        console.log(comment._id);
+       }
+            
+     },
+
     showAllplaylists: document.getElementById("showAllplaylists"),
 
      displayPlayLists(playlists) {
@@ -957,18 +962,7 @@ const View = {
                     FetchModel.fetchCommentsforSpecifikPlaylist(this);                        
                    });
 
-              function getCommentofPlaylist(comments){
-                            for(comment of comments){
-                                console.log(comment);
-                                console.log(comment.body);
-                                console.log(comment.username);
-                                console.log(comment._id);
-                            singlePlaylistContainer.innerHTML += `
-                            <p>Comments: ${comment.body}</p>
-                            `;
-                        }
-                        console.log('hej');
-                };
+                
                 
                 
                 function renderHtmlSinglePlaylist () {
@@ -985,6 +979,17 @@ const View = {
                             `;
                         }
                     }
+
+                      /*  for(comment of comments){
+                                console.log(comment);
+                                console.log(comment.body);
+                                console.log(comment.username);
+                                console.log(comment._id);
+                            singlePlaylistContainer.innerHTML += `
+                            <p>Comments: ${comment.body}</p>
+                            `;
+                        }*/
+               
 
                     viewComments.innerText = 'View all comments';
                     singlePlaylistContainer.appendChild(deletePlaylist);
