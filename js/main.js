@@ -4,6 +4,7 @@ let selectedAlbum = '';
 let selectTrack = '';
 let commentValue = '';
 let ratingValue = '';
+let commentBy = '';
 
 
 const FetchModel = {
@@ -189,7 +190,7 @@ const postModel = {
         let comment = {
             playlist: playlistid,
             body: commentValue,
-            username: "The commenter"
+            username: commentBy
         }
         postModel.postCommentToPlaylist(playlistid, comment)
     },
@@ -1003,6 +1004,7 @@ const View = {
 
             inputButton.addEventListener('click', function() {
                 commentValue = inputComment.value
+                commentBy = inputCommentBy.value;
                 postModel.getPlaylistComment(clickOnPlaylist.dataset.id);
             });
 
