@@ -22,10 +22,10 @@ const FetchModel = {
     },
 
     fetchAlbums() {
-        return fetch('https://folksa.ga/api/albums?key=flat_eric&limit=200')
+        return fetch('https://folksa.ga/api/albums?key=flat_eric&limit=200&populateArtists=true')
            .then((response) => response.json())
            .then((albums) => {
-                console.log(albums);
+                console.log('Albums', albums);
                 View.displayAlbumList(albums);
             })
     },
@@ -577,16 +577,14 @@ const View = {
     },
  
 
-     addAlbumToArtistId(element) {
+    addAlbumToArtistId(element) {
         const addAlbumDiv = document.getElementById('addAlbum');
         const albumButton = document.getElementById('albumButton');
         albumButton.id = element.id;
         albumButton.dataset.id = element.id;
 
-        let artistHeading = document.createElement('h3');
+        let artistHeading = document.getElementById('artistHeading');
         artistHeading.innerText = element.innerText;
-
-        addAlbumDiv.appendChild(artistHeading);
 
         Controller.registerCreateAlbumClickHandler(albumButton);
     },
@@ -639,52 +637,89 @@ const View = {
 
     },
 
-
-    showAllAlbums: document.getElementById("showAllAlbums"),
-
     displayAlbumList(albums) {
-        View.showAllAlbums.addEventListener('click', function(){
-            for (let album of albums) {
-                const albumContainer = document.getElementById('albumContainer');
-                const ul = document.getElementById('albumList');
-                const li = document.createElement('li');
-                const clickOnAlbum = document.createElement('button');
-                const deleteAlbum = document.createElement('button');
-                const updateAlbum = document.createElement('button');
-                let inputChangeAlbumTitle = document.createElement('input');
-                    inputChangeAlbumTitle.setAttribute('type', 'text');
-                updateAlbum.innerText = 'Update Album'; 
-                deleteAlbum.innerText ='Delete Album';
-                clickOnAlbum.id = album._id;
-                clickOnAlbum.dataset.id = album._id;
-                clickOnAlbum.innerText = album.title;
-                clickOnAlbum.artistId = album.artists;
-                li.classList.add('albumContainer');
-                clickOnAlbum.addEventListener('click', function() {
-                    this.dataset.id;
-                    this.artistId;
-                    this.innerText;
-                    View.registerAlbumId(this);
-                });
+        for (let album of albums) {
+            for (let artist of album.artists) {
+            const albumCard = document.createElement('div');
+            const albumCardAction = document.createElement('div');
+            const clickOnAlbum = document.createElement('a');
+            const albumArtist = document.createElement('span');
 
-                deleteAlbum.addEventListener('click', function() {
-                    deleteDataModel.deleteAlbum(clickOnAlbum.id);
-                });
+            const showAlbumAction = document.createElement('button');
+            const deleteAlbum = document.createElement('button');
+            const updateAlbum = document.createElement('button');
+
+            albumCard.className = 'albumCard';
+            albumCardAction.className = 'albumCardAction';
+
+            showAlbumAction.className = 'showAlbumAction';
+            deleteAlbum.className = 'deleteAlbum';
+            updateAlbum.className = 'updateAlbum';
+
+            showAlbumAction.innerText = 'Edit';
+            updateAlbum.innerText = 'Update'; 
+            deleteAlbum.innerText ='Delete Album';
+            albumArtist.innerText = artist.name;
+
+            const coverAlbum = document.createElement('img');
+            coverAlbum.className = 'coverAlbum';
+            const coverAlbumSrc = album.coverImage;
+            coverAlbum.setAttribute('onerror', 'src="https://upload.wikimedia.org/wikipedia/en/d/dd/Ray_of_Light_Madonna.png"');
+            coverAlbum.setAttribute('src', coverAlbumSrc);
+
+            let inputChangeAlbumTitle = document.createElement('input');
+            const inputChangeAlbumLabel = document.createElement('label');
+            inputChangeAlbumTitle.setAttribute('type', 'text');
+            inputChangeAlbumTitle.setAttribute('placeholder', 'Change title here');
+            inputChangeAlbumLabel.innerText = 'Update album title';
+
+            clickOnAlbum.id = album._id;
+            clickOnAlbum.dataset.id = album._id;
+            clickOnAlbum.innerText = album.title;
+            clickOnAlbum.artistId = album.artists;
+
+            clickOnAlbum.addEventListener('click', function() {
+                this.dataset.id;
+                this.artistId;
+                this.innerText;
+                View.registerAlbumId(this);
+            });
+
+            deleteAlbum.addEventListener('click', function() {
+                deleteDataModel.deleteAlbum(clickOnAlbum.id);
+            });
+
+            updateAlbum.addEventListener('click', function() {
+                changedAlbumTitle = inputChangeAlbumTitle.value;
+                updateModel.changeAlbumTitle(clickOnAlbum.id);
+            });
+
+            albumCardAction.style.display = "none";
+
+            showAlbumAction.addEventListener('click', function(){
+                if (albumCardAction.style.display === "none"){
+                    albumCardAction.style.display = "block";
+                } else {
+                    albumCardAction.style.display = "none";
+                }
+            })
+
+            albumContainer.appendChild(albumCard);
+
+            albumCard.appendChild(coverAlbum);
+            albumCard.appendChild(clickOnAlbum);
+            albumCard.appendChild(albumArtist);
                 
-                updateAlbum.addEventListener('click', function() {
-                    changedAlbumTitle = inputChangeAlbumTitle.value;
-                    updateModel.changeAlbumTitle(clickOnAlbum.id);
-                });
+            albumCard.appendChild(showAlbumAction);
+            albumCard.appendChild(albumCardAction);
 
-                albumContainer.appendChild(ul);
-                ul.appendChild(li);
-                li.appendChild(clickOnAlbum);
-                li.appendChild(deleteAlbum);
-                li.appendChild(updateAlbum);
-                li.appendChild(inputChangeAlbumTitle);
+            albumCardAction.appendChild(inputChangeAlbumLabel);
+            albumCardAction.appendChild(inputChangeAlbumTitle);
+            albumCardAction.appendChild(updateAlbum);
+            albumCardAction.appendChild(deleteAlbum);
 
-            } //End of loop
-        })
+            }
+        } //End of loop
     },
 
 
