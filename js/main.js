@@ -699,11 +699,11 @@ const View = {
 
     filterAlbums () {
         View.input1.addEventListener('keyup', function() {
-            
+            console.log('all');
             let filter, ul, li, i;
             filter = View.input1.value.toUpperCase();
 
-            ul = document.getElementById("ul");
+            ul = document.getElementById("albumslist");
             li = ul.getElementsByTagName("li");
             
             for (i = 0; i < li.length; i++) {
@@ -718,9 +718,7 @@ const View = {
     },
 
     filterTracks () {
-        View.input2.addEventListener('keyup', function() {
-            console.log('filter');
-            
+        View.input2.addEventListener('keyup', function() {            
             let filter, ul, li, a, i;
             filter = View.input2.value.toUpperCase();
 
@@ -785,14 +783,8 @@ const View = {
         Controller.registerCreateAlbumClickHandler(albumButton);
     },
 
-
-    //showAllTracks: document.getElementById("showAllTracks"),
-
-
     displayTracksList(tracks) {
-      //  showAllTracks.addEventListener('click', function(){
             for (let track of tracks) {
-               // const trackContainer = document.getElementById('trackContainer');
                 const tracksList = document.getElementById('tracks');
                 const ul = document.getElementById('tracklist');
                 const li = document.createElement('li');
@@ -816,8 +808,6 @@ const View = {
                     deleteDataModel.deleteTrack(clickOnTrack.id);
                 });
 
-             
-               // trackContainer.appendChild(trackslist);
                 tracksList.appendChild(ul);
                 ul.appendChild(li);
                 li.appendChild(clickOnTrack);
@@ -825,10 +815,6 @@ const View = {
             } //End of loop
 
             View.filterTracks();
-       // }) 
-        
-        
-
     },
 
     addPlaylist: document.getElementById('playlistButton'),
@@ -844,6 +830,14 @@ const View = {
     displayAlbumList(albums) {
         for (let album of albums) {
             for (let artist of album.artists) {
+            const albumList = document.getElementById('albums');
+                const ul = document.getElementById('albumslist');
+                const li = document.createElement('li'); 
+                    li.id = album._id;
+                    li.dataset.id = album._id;
+                    li.innerText = album.title;
+                    li.artistId = album.artists;     
+                      
             const albumCard = document.createElement('div');
             const albumCardAction = document.createElement('div');
             
@@ -883,6 +877,14 @@ const View = {
             clickOnAlbum.innerText = album.title;
             clickOnAlbum.artistId = album.artists;
 
+
+            li.addEventListener('click', function() {
+                this.dataset.id;
+                this.artistId;
+                this.innerText;
+                View.registerAlbumId(this);
+            });
+
             clickOnAlbum.addEventListener('click', function() {
                 this.dataset.id;
                 this.artistId;
@@ -908,6 +910,10 @@ const View = {
                     albumCardAction.style.display = "none";
                 }
             })
+
+
+            albumList.appendChild(ul);
+            ul.appendChild(li);
 
             albumContainer.appendChild(albumCard);
 
