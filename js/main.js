@@ -828,7 +828,7 @@ const View = {
                 const coverAlbum = document.createElement('img');
                 coverAlbum.className = 'coverAlbum';
                 const coverAlbumSrc = album.coverImage;
-                coverAlbum.setAttribute('onerror', 'src="https://upload.wikimedia.org/wikipedia/en/d/dd/Ray_of_Light_Madonna.png"');
+                coverAlbum.setAttribute('onerror', 'src="images/no-cover.png"');
                 coverAlbum.setAttribute('src', coverAlbumSrc);
 
                 let inputChangeAlbumTitle = document.createElement('input');

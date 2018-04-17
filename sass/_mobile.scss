@@ -52,6 +52,149 @@ a, button {
 
 }
 
+.listContainer {
+    width: 100%;
+    margin-bottom: 48px;
+}
+
+.playlistContainer {
+    width: 80%;
+    margin: auto;
+    margin-top: 48px;
+    
+    .showMorePlaylist {
+        color: #405BFF;
+        font-size: 1em;
+        padding: 10px 25px;
+        font-weight: 500;
+        cursor: pointer;
+        background-color: transparent;
+        outline: none;
+        border: 0;
+    }
+
+}
+
+.albumWrap {
+    width: 80%;
+    margin: auto;
+
+    .albumContainer {
+        margin: auto;
+        display: flex;
+        display: -webkit-flex;
+        flex-wrap: wrap;
+        -webkit-flex-wrap: wrap;
+       justify-content: space-between;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+
+    .albumCard {
+        flex: 0 1 24%;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        border-radius: 4px;
+        max-width: 237px;
+        margin-bottom: 20px; 
+        padding-bottom: 30px;
+        position: relative;
+
+        a {
+            font-weight: 500;
+            margin: 8px 8px 0;
+            padding-bottom: 8px;
+            display: block;
+            cursor: pointer;
+
+            &:hover {
+                color: #405BFF;
+            }
+        }
+
+        span {
+            color: #ADB2B5;
+            font-size: 0.9em;
+            font-weight: 500;
+            margin-left: 8px;
+            padding-bottom: 8px;
+            display: block;
+        }
+
+        .showAlbumAction {
+            color: #405BFF;
+            font-weight: 500;
+            font-size: 0.8em;
+            border: 0;
+            background-color: transparent;
+            margin-top: 8px;
+            right: 8px;
+            bottom: 8px;
+            display: block;
+            position: absolute;
+        }
+    }
+
+    .albumCardAction {
+        padding: 8px;
+
+        .deleteAlbum, .updateAlbum {
+            margin: auto;
+            font-weight: 500;
+            padding: 10px 20px;
+            border-radius: 4px;
+        }
+
+        .updateAlbum {
+            color: #fff;
+            background-color: #32AB86;
+
+            &:hover {
+                color: #fff;
+                background-color: #1E765B;
+            }
+        }
+
+        .deleteAlbum {
+            color: #990000;
+            border: 1px solid #990000;
+            margin-left: 6px;
+
+            &:hover {
+                color: #fff;
+                background-color: #990000;
+            }
+        }
+
+        label {
+            margin-top: 12px;
+            display: block;
+            font-size: 0.9em;
+        }
+
+        input[type=text] {
+            width: 80%;
+            padding: 12px;
+            margin: 5px 0 10px 0;
+            display: inline-block;
+            border: none;
+            background: #f1f1f1;
+        }
+
+        input[type=text]:focus {
+            background-color: #ddd;
+            outline: none;
+        }
+
+    }
+
+    .coverAlbum {
+        border-radius: 4px;
+        width: 237px;
+        height: 237px;
+    }
+}
+
 
 #ul li{
     display: none;
@@ -103,6 +246,7 @@ th, td {
     
     .deleteButtonArtist {
         color: #990000;
+        background-color: transparent;
         border: none;
         
         &:hover {
@@ -142,6 +286,7 @@ th, td {
     input[type=submit], #albumButton, #trackButton, #playlistButton  {
         color: #007884;
         font-weight: 500;
+        background-color: transparent;
         padding: 10px 20px;
         border-radius: 4px;
         border: 1px solid #007884;
@@ -150,27 +295,6 @@ th, td {
             color: #fff;
             background-color: #007884;
         }
-    }
-
-}
-
-.listContainer {
-    width: 100%;
-}
-
-.playlistContainer {
-    width: 80%;
-    margin: auto;
-    
-    .showMorePlaylist {
-        color: #405BFF;
-        font-size: 1em;
-        padding: 10px 25px;
-        font-weight: 500;
-        cursor: pointer;
-        background: transparent;
-        outline: none;
-        border: 0;
     }
 
 }
@@ -186,6 +310,7 @@ th, td {
     .showAllTracks {
         color: #007884;
         font-weight: 500;
+        background-color: transparent;
         padding: 10px 20px;
         margin: auto;
         display: block;
@@ -208,6 +333,7 @@ th, td {
     
     .deleteTrack {
         color: #990000;
+        background-color: transparent;
         border: none;
         
         &:hover {
@@ -216,120 +342,4 @@ th, td {
             border-radius: 4px; 
         }
     }
-}
-
-
-.albumContainer {
-    width: 80%;
-    margin: auto;
-    display: flex;
-    display: -webkit-flex;
-    flex-wrap: wrap;
-    -webkit-flex-wrap: wrap;
-   justify-content: space-between;
-    -webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
-}
-
-.albumCard {
-    flex: 0 1 24%;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-    border-radius: 4px;
-    max-width: 237px;
-    margin-bottom: 20px; 
-	padding-bottom: 30px;
-    position: relative;
-    
-    a {
-        font-weight: 500;
-        margin: 8px 8px 0;
-        padding-bottom: 8px;
-        display: block;
-        cursor: pointer;
-        
-        &:hover {
-            color: #405BFF;
-        }
-    }
-    
-    span {
-        color: #ADB2B5;
-        font-size: 0.9em;
-        font-weight: 500;
-        margin-left: 8px;
-        padding-bottom: 8px;
-        display: block;
-    }
-    
-    .showAlbumAction {
-        color: #405BFF;
-        font-weight: 500;
-        font-size: 0.8em;
-        border: 0;
-        margin-top: 8px;
-        right: 8px;
-        bottom: 8px;
-        display: block;
-        position: absolute;
-    }
-}
-
-.albumCardAction {
-    padding: 8px;
-    
-    .deleteAlbum, .updateAlbum {
-        margin: auto;
-        font-weight: 500;
-        padding: 10px 20px;
-        border-radius: 4px;
-    }
-    
-    .updateAlbum {
-        color: #fff;
-        background-color: #32AB86;
-        
-        &:hover {
-            color: #fff;
-            background-color: #1E765B;
-        }
-    }
-    
-    .deleteAlbum {
-        color: #990000;
-        border: 1px solid #990000;
-        margin-left: 6px;
-        
-        &:hover {
-            color: #fff;
-            background-color: #990000;
-        }
-    }
-    
-    label {
-        margin-top: 12px;
-        display: block;
-        font-size: 0.9em;
-    }
-    
-    input[type=text] {
-        width: 80%;
-        padding: 12px;
-        margin: 5px 0 10px 0;
-        display: inline-block;
-        border: none;
-        background: #f1f1f1;
-    }
-
-    input[type=text]:focus {
-        background-color: #ddd;
-        outline: none;
-    }
-    
-}
-
-.coverAlbum {
-    border-radius: 4px;
-    width: 237px;
-    height: 237px;
 }
