@@ -63,15 +63,19 @@ const FetchModel = {
             .then((comments) => {
                 for(comment of comments){
                     const container = viewCommentsButton.parentElement;
+                    const commentContainer = document.createElement('div');
                     const commentBody = document.createElement('p');
                     const commentUser = document.createElement('p');
                     const deleteComment = document.createElement('button');
+                    commentContainer.className = 'commentContainer';
                     deleteComment.innerText = 'Delete comment';
+                    deleteComment.className = 'deleteComment';
                     commentBody.innerHTML = `Comment: ${comment.body}`;
                     commentUser.innerHTML = `By: ${comment.username}`;
-                    container.appendChild(commentBody);
-                    container.appendChild(commentUser);
-                    container.appendChild(deleteComment);
+                    container.appendChild(commentContainer);
+                    commentContainer.appendChild(commentBody);
+                    commentContainer.appendChild(commentUser);
+                    commentContainer.appendChild(deleteComment);
                     deleteDataModel.registerDeleteCommentClickHandler(deleteComment, comment._id);
                 };
             });
@@ -422,11 +426,12 @@ const Controller = {
                 postModel.postArtist(artist);
             }
         };
-    },
+    },  
 
-    addAlbumbutton() {
-        const addAlbumButton = document.getElementById('albumButton');
-        addAlbumButton.onclick = function() {
+    addAlbumButton: document.getElementById('albumButton'),
+
+    registerAddAlbumButtonClickHandler() {
+        addAlbumButton.onclick = function errorMessage() {
             const errorMessage = document.getElementById('chooseArtistErrorMsg');
             let errorMessageText = document.getElementById('errorMsgText');
             errorMessageText.innerText = 'You need to choose an artist first!';
@@ -463,8 +468,8 @@ const Controller = {
 
     addTrackButton: document.getElementById('trackButton'),
 
-    registerAddTrackButton() {   
-        addTrackButton.onclick = function() {
+    registerAddTrackButtonClickHandler() {   
+        addTrackButton.onclick = function errorMessage() {
             const errorMessage = document.getElementById('addTrackErrorMsg');
             let errorMessageText = document.getElementById('errorMsg');
             errorMessageText.innerText = 'You need to choose an album to add a new track!';
@@ -485,9 +490,10 @@ const Controller = {
         }
     },
 
-    createPlaylistButton() {
-        const createPlaylistButton = document.getElementById('playlistButton');
-        createPlaylistButton.onclick = function() {
+    createPlaylistButton: document.getElementById('playlistButton'),
+
+    registerCreatePlaylistButtonClickHandler() {
+        createPlaylistButton.onclick = function errorMessage() {
             const errorMessage = document.getElementById('createPlaylistErrorMsg');
             let errorMessageText = document.getElementById('errorTextMsg');
             errorMessageText.innerText = 'You need to choose a track first if you want to create a new playlist!';
@@ -656,6 +662,7 @@ const View = {
             deleteButton.dataset.id = artist._id;
             deleteButton.innerText = 'Delete';
             deleteButton.className = 'deleteButtonArtist';
+            
             const clickOnArtist = document.createElement('a');
             clickOnArtist.id = artist._id;
             clickOnArtist.dataset.id = artist._id;
@@ -860,7 +867,7 @@ const View = {
 
     showAllplaylists: document.getElementById("showAllplaylists"),
 
-    displayPlayLists(playlists) {
+        displayPlayLists(playlists) {
 
         const playlistContainer = document.getElementById('playlistContainer');
         const table = document.createElement('table');
@@ -895,21 +902,24 @@ const View = {
             rating.setAttribute('type', 'number');
             rating.setAttribute('max', 10);
             rating.setAttribute('min', 0);
-            rating.setAttribute('placeholder', 'Rate (1-10)');
 
             let ratingButton = document.createElement('button');
+            ratingButton.className = 'ratingButton';
             ratingButton.innerText = 'Vote';
 
             let inputComment = document.createElement('textarea');
             inputComment.setAttribute('type', 'text');
             inputComment.setAttribute('rows', 8);
             inputComment.setAttribute('cols', 50);
-            inputComment.setAttribute('placeholder', 'Comment here..')
+            inputComment.setAttribute('placeholder', 'Write your heart out.')
+            
             let inputCommentBy = document.createElement('input');
             inputCommentBy.setAttribute('type', 'text');
-            inputCommentBy.setAttribute('placeholder', 'Comment by:')
-            const inputButton = document.createElement('button');
-            inputButton.innerText = "Comment";
+            inputCommentBy.setAttribute('placeholder', 'Ex. The Commentor')
+            
+            const inputCommentButton = document.createElement('button');
+            inputCommentButton.className = 'inputCommentButton';
+            inputCommentButton.innerText = "Fire away";
 
             const clickOnPlaylist = document.createElement('button');
             clickOnPlaylist.className = 'clickOnPlaylist';
@@ -917,20 +927,40 @@ const View = {
             const deletePlaylist = document.createElement('button');
             const updatePlaylist = document.createElement('button');
             const showMorePlaylist = document.createElement('button');
-            showMorePlaylist.className = 'showMorePlaylist';
-
-            //Button names
-            deletePlaylist.dataset.id = playlist._id;
+            let viewComments = document.createElement('button');
+            
             deletePlaylist.innerText = 'Delete Playlist';
             updatePlaylist.innerText = 'Update Playlist';
-            showMorePlaylist.innerHTML = 'View songs';
-
-            let singlePlaylistContainer = document.createElement('div');
-            singlePlaylistContainer.className = "singlePlaylistContainer";
-
-            let viewComments = document.createElement('button');
-            viewComments.dataset.id = playlist._id;
+            showMorePlaylist.innerText = 'View songs';
             viewComments.innerText = 'View all comments';
+            
+            deletePlaylist.dataset.id = playlist._id;
+            deletePlaylist.className = 'deletePlaylist';
+            updatePlaylist.className = 'updatePlaylist';
+            showMorePlaylist.className = 'showMorePlaylist';
+            viewComments.className = 'viewComments';
+            
+            let singlePlaylistContainer = document.createElement('ol');
+            singlePlaylistContainer.className = "singlePlaylistContainer";
+            
+            let singlePlaylistAction = document.createElement('div');
+            singlePlaylistAction.className = 'singlePlaylistAction';
+            
+            const editPlaylistButton = document.createElement('button');
+            editPlaylistButton.innerText = 'Edit playlist';
+            editPlaylistButton.className = 'editPlaylistButton';
+            
+            const labelEditPlaylist = document.createElement('label');
+            const labelVote = document.createElement('label');
+            const labelComment = document.createElement('label');
+            const labelCommentBy = document.createElement('label');
+            
+            labelEditPlaylist.innerText = 'Edit playlist title';
+            labelVote.innerText = 'Vote (1-10)';
+            labelComment.innerText = 'Comment';
+            labelCommentBy.innerText = 'Comment by';
+            
+            viewComments.dataset.id = playlist._id;
 
             clickOnPlaylist.id = playlist._id;
             clickOnPlaylist.dataset.id = playlist._id;
@@ -946,7 +976,7 @@ const View = {
 
             });
 
-            inputButton.addEventListener('click', function() {
+            inputCommentButton.addEventListener('click', function() {
                 commentValue = inputComment.value
                 commentBy = inputCommentBy.value;
                 postModel.getPlaylistComment(clickOnPlaylist.dataset.id);
@@ -973,29 +1003,51 @@ const View = {
 
             function renderHtmlSinglePlaylist() {
                 singlePlaylistContainer.innerHTML = `
-                            <h4>Tracks</h4>`;
-
+                            <h4>Tracks</h4>
+                            `;     
                 for (let track of playlist.tracks) {
-
+                   
+                    
                     for (let artist of track.artists) {
 
                         singlePlaylistContainer.innerHTML += `
                                 
-                                <p>${artist.name} - ${track.title}</p>
+                            <li>${artist.name} - ${track.title}</li>
                                 `;
+
                     }
-                }                  
+                }
+                
+                singlePlaylistAction.style.display = "none";
 
-                singlePlaylistContainer.appendChild(deletePlaylist);
-                singlePlaylistContainer.appendChild(updatePlaylist);
-                singlePlaylistContainer.appendChild(inputChangePlaylistTitle);
-                singlePlaylistContainer.appendChild(rating);
-                singlePlaylistContainer.appendChild(ratingButton);
-
-                singlePlaylistContainer.appendChild(inputComment);
-                singlePlaylistContainer.appendChild(inputCommentBy);
-                singlePlaylistContainer.appendChild(inputButton);
+                editPlaylistButton.addEventListener('click', function() {
+                    if (singlePlaylistAction.style.display === "none") {
+                        singlePlaylistAction.style.display = "block";
+                    } else {
+                        singlePlaylistAction.style.display = "none";
+                    }
+                })
+                
+                
+                singlePlaylistContainer.appendChild(singlePlaylistAction);
                 singlePlaylistContainer.appendChild(viewComments);
+                
+                singlePlaylistContainer.appendChild(editPlaylistButton);
+                singlePlaylistAction.appendChild(labelEditPlaylist); 
+                singlePlaylistAction.appendChild(inputChangePlaylistTitle);
+                singlePlaylistAction.appendChild(updatePlaylist);
+                singlePlaylistAction.appendChild(deletePlaylist);
+                
+                singlePlaylistAction.appendChild(labelVote);
+                singlePlaylistAction.appendChild(rating);
+                singlePlaylistAction.appendChild(ratingButton);
+                
+                singlePlaylistAction.appendChild(labelCommentBy)
+                singlePlaylistAction.appendChild(inputCommentBy);
+                singlePlaylistAction.appendChild(labelComment);
+                singlePlaylistAction.appendChild(inputComment);
+                singlePlaylistAction.appendChild(inputCommentButton);
+                
             };
 
 
@@ -1055,7 +1107,7 @@ FetchModel.fetchArtists();
 FetchModel.fetchAlbums();
 FetchModel.fetchTracks();
 FetchModel.fetchPlaylist();
-Controller.registerAddTrackButton();
-Controller.addTrackButton();
-Controller.createPlaylistButton();
+Controller.registerAddAlbumButtonClickHandler(); 
+Controller.registerAddTrackButtonClickHandler();
+Controller.registerCreatePlaylistButtonClickHandler();
 Controller.registerCreateArtistClickHandler();
