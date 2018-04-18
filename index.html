@@ -68,12 +68,14 @@
 
         <div class="addTrack" id="addTrack">
             <h3>Add tracks</h3>
-            <label for="searchAlbums">Search albums</label>
+            <label for="searchAlbums">Choose album</label>
             <input type="text" id="myInput1" name="searchAlbums" placeholder="Search album name" title="Search artist name">
             <div id="albums">
                 <ul id="albumslist"></ul>
             </div>
             <div id="addTrackErrorMsg"><p id="errorMsg"><p></div>
+            <p id="errorMsgAddTrack"></p>
+            <h3 id="albumHeading"></h3>
             <label for="albumTrack">Track name</label>
            <input type="text" id="albumTrack" name="albumTrack" placeholder="Title of the track">
            <button id="trackButton">Add track +</button>
@@ -83,12 +85,13 @@
 
         <div class="addPlaylist" id="addPlayList">
             <h3>Create Playlist</h3>
-            <label for="searchTrack">Search track</label>
+            <label for="searchTrack">Choose track</label>
             <input type="text" id="myInput2" name="searchTrack" placeholder="Search track name" title="Search artist name">
             <div id="tracks">
                 <ul id="tracklist"></ul>
             </div>
             <div id="createPlaylistErrorMsg"><p id="errorTextMsg"><p></div>
+            <h3 id="trackHeading"></h3>
             <label for="createPlaylist">Playlist name</label>
            <input type="text" id="createdPlaylist" name="createPlaylist" placeholder="Title of the playlist">
            <label for="createdBy">Your name</label>

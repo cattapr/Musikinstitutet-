@@ -56,6 +56,23 @@ const FetchModel = {
             });
     },
 
+    fetchSpecificAlbum(albumID, albumCard){
+        return fetch(`https://folksa.ga/api/albums/${albumID}?key=flat_eric`)
+              .then((response) => response.json())
+              .then((album) => {
+                for(let track of album.tracks){
+                    const container = albumCard;
+                    const trackTitle = document.createElement('p');
+                    const deleteTrackButton = document.createElement('button');
+                    deleteTrackButton.innerText = 'Delete track';
+                    trackTitle.innerText = track.title;
+                    container.appendChild(trackTitle);
+                    trackTitle.appendChild(deleteTrackButton);
+                    deleteDataModel.deleteTrackFromAlbum(track._id);
+                }
+              });
+    },
+
      fetchCommentsforSpecificPlaylist(viewCommentsButton) {
         let playlistID = viewCommentsButton.dataset.id;
         return fetch(`https://folksa.ga/api/playlists/${playlistID}/comments?key=flat_eric`)
@@ -322,6 +339,23 @@ const deleteDataModel = {
             });
     },
 
+    deleteTrackFromAlbum(track){
+        let trackID = track;
+        return fetch(`https://folksa.ga/api/tracks/${trackID}?key=flat_eric`, {
+                method: 'DELETE',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+            })
+            .then((response) => response.json())
+            .then((track) => {
+            })
+            .catch((error) => {
+                View.errorMessage();
+            });
+    },
+
     deleteTrack(deleteTrackButton) {
         let trackID = deleteTrackButton.dataset.id;
         return fetch(`https://folksa.ga/api/tracks/${trackID}?key=flat_eric`, {
@@ -431,7 +465,7 @@ const Controller = {
     addAlbumButton: document.getElementById('albumButton'),
 
     registerAddAlbumButtonClickHandler() {
-        addAlbumButton.onclick = function errorMessage() {
+        Controller.addAlbumButton.onclick = function errorMessage() {
             const errorMessage = document.getElementById('chooseArtistErrorMsg');
             let errorMessageText = document.getElementById('errorMsgText');
             errorMessageText.innerText = 'You need to choose an artist first!';
@@ -443,9 +477,9 @@ const Controller = {
         let button = albumButton;
 
         button.onclick = function createAlbum() {
-            let albumTitle = View.albumTitle();
-            let albumReleaseDate = View.albumReleaseDate();
-            let albumGenre = View.albumGenre();
+            let albumTitle = View.getinputAlbumTitle();
+            let albumReleaseDate = View.getinputAlbumReleaseDate();
+            let albumGenre = View.getinputAlbumGenre();
 
             if (albumTitle === "" || albumReleaseDate === "" || albumGenre === "") {
                 let errorMessage = document.getElementById('errorMsgCreateAlbum');
@@ -454,10 +488,10 @@ const Controller = {
             } else {
 
                 let album = {
-                    title: View.albumTitle(),
+                    title: View.getinputAlbumTitle(),
                     artists: id, //Can be multiple IDs, must be comma separated string if multiple
-                    releaseDate: View.albumReleaseDate(),
-                    genres: View.albumGenre(), //Must be a comma separated string
+                    releaseDate: View.getinputAlbumReleaseDate(),
+                    genres: View.getinputAlbumGenre(), //Must be a comma separated string
                     spotifyURL: "https://open.spotify.com/album/1jKfTvT64lcQwA74WmkKiJ?si=nmdUZ2UpS4uUknUrGX1smg",
                     coverImage: "https://upload.wikimedia.org/wikipedia/en/thumb/0/02/Tim_Buckley_-_Goodbye_And_Hello.jpg/220px-Tim_Buckley_-_Goodbye_And_Hello.jpg"
                 }
@@ -469,7 +503,7 @@ const Controller = {
     addTrackButton: document.getElementById('trackButton'),
 
     registerAddTrackButtonClickHandler() {   
-        addTrackButton.onclick = function errorMessage() {
+        Controller.addTrackButton.onclick = function errorMessage() {
             const errorMessage = document.getElementById('addTrackErrorMsg');
             let errorMessageText = document.getElementById('errorMsg');
             errorMessageText.innerText = 'You need to choose an album to add a new track!';
@@ -479,21 +513,30 @@ const Controller = {
     trackButton: document.getElementById('trackButton'),
 
     registerTrackTitleToAlbumClickHandler(artistId) {
-        trackButton.onclick = function createTrack() {
+        Controller.trackButton.onclick = function createTrack() {
+            let trackTitle = View.getinputAlbumTrack();
+            if (trackTitle === "") {
+                let errorMessage = document.getElementById('errorMsgAddTrack');
+                errorMessage.innerText = 'You need to fill in a track name!';
+
+            } else {
+
             let track = {
-                title: View.albumTrack(),
+                title: View.getinputAlbumTrack(),
                 artists: artistId, // Must be a string with comma separated values
                 album: selectedAlbum, // Must be a string with comma separated values
                 genres: "Folk,Rock"
             }
             postModel.postTrack(track);
         }
+     }
+
     },
 
     createPlaylistButton: document.getElementById('playlistButton'),
 
     registerCreatePlaylistButtonClickHandler() {
-        createPlaylistButton.onclick = function errorMessage() {
+        Controller.createPlaylistButton.onclick = function errorMessage() {
             const errorMessage = document.getElementById('createPlaylistErrorMsg');
             let errorMessageText = document.getElementById('errorTextMsg');
             errorMessageText.innerText = 'You need to choose a track first if you want to create a new playlist!';
@@ -515,9 +558,9 @@ const Controller = {
         }
     },
 
-    trackArray(playlistID) {
+    registerTrackIdandPlaylistId(clickOnPlaylistButton) {
         let tracks = selectTrack;
-        let playlist = playlistID.dataset.id;
+        let playlist = clickOnPlaylistButton.dataset.id;
 
         Controller.postTrackToPlaylist(playlist, tracks);
     },
@@ -558,22 +601,22 @@ const View = {
         return getinputGenre;
     },
 
-    albumTitle() {
+    getinputAlbumTitle() {
         let albumTitle = document.getElementById('albumTitle').value;
         return albumTitle;
     },
 
-    albumReleaseDate() {
+    getinputAlbumReleaseDate() {
         let albumReleaseDate = document.getElementById('albumRelease').value;
         return albumReleaseDate;
     },
 
-    albumGenre() {
+    getinputAlbumGenre() {
         let albumGenre = document.getElementById('albumGenre').value;
         return albumGenre;
     },
 
-    albumTrack() {
+    getinputAlbumTrack() {
         let albumTrack = document.getElementById('albumTrack').value;
         return albumTrack;
     },
@@ -671,7 +714,7 @@ const View = {
             clickOnArtist.addEventListener('click', function() {
                 this.dataset.id;
                 this.innerText;
-                View.addAlbumToArtistId(this);
+                View.addArtistIdToAlbumButton(this);
             });
 
             deleteButton.addEventListener('click', function() {
@@ -688,17 +731,27 @@ const View = {
         View.filterArtists();
     },
 
+    displayChosenArtist(element){
+        let artistHeading = document.getElementById('artistHeading');
+        artistHeading.innerText = element.innerText;
+        return artistHeading;
+    },
 
-    addAlbumToArtistId(element) {
+    addArtistIdToAlbumButton(element) {
         const addAlbumDiv = document.getElementById('addAlbum');
         const albumButton = document.getElementById('albumButton');
         albumButton.id = element.id;
         albumButton.dataset.id = element.id;
 
-        let artistHeading = document.getElementById('artistHeading');
-        artistHeading.innerText = element.innerText;
+        View.displayChosenArtist(element);
 
         Controller.registerCreateAlbumClickHandler(albumButton);
+    },
+
+    displayChosenTrack(track){
+        let trackHeading = document.getElementById('trackHeading');
+        trackHeading.innerText = track.innerText;
+        return trackHeading;
     },
 
     displayTracksList(tracks) {
@@ -720,6 +773,7 @@ const View = {
                 this.dataset.id;
                 this.innerText;
                 this.trackId;
+                View.displayChosenTrack(this);
                 View.addTrackToPlaylist(this);
             });
 
@@ -750,29 +804,35 @@ const View = {
                 const albumList = document.getElementById('albums');
                 const ul = document.getElementById('albumslist');
                 const li = document.createElement('li');
-                li.id = album._id;
-                li.dataset.id = album._id;
-                li.innerText = album.title;
-                li.artistId = album.artists;
 
                 const albumCard = document.createElement('div');
                 const albumCardAction = document.createElement('div');
+                const albumTitle = document.createElement('p');
 
                 const clickOnAlbum = document.createElement('a');
                 const albumArtist = document.createElement('span');
 
                 const showAlbumAction = document.createElement('button');
                 const deleteAlbum = document.createElement('button');
-                deleteAlbum.dataset.id = album._id;
                 const updateAlbum = document.createElement('button');
+
+                let albumID = album._id;
+                FetchModel.fetchSpecificAlbum(albumID,albumCard);
 
                 albumCard.className = 'albumCard';
                 albumCardAction.className = 'albumCardAction';
-
+                clickOnAlbum.className = 'clickOnAlbum';
                 showAlbumAction.className = 'showAlbumAction';
                 deleteAlbum.className = 'deleteAlbum';
                 updateAlbum.className = 'updateAlbum';
 
+                deleteAlbum.dataset.id = album._id;
+                clickOnAlbum.id = album._id;
+                clickOnAlbum.dataset.id = album._id;
+                clickOnAlbum.artistId = album.artists;
+
+                clickOnAlbum.innerText = album.title;
+                albumTitle.innerText = album.title;
                 showAlbumAction.innerText = 'Edit';
                 updateAlbum.innerText = 'Update';
                 deleteAlbum.innerText = 'Delete Album';
@@ -790,24 +850,11 @@ const View = {
                 inputChangeAlbumTitle.setAttribute('placeholder', 'Change title here');
                 inputChangeAlbumLabel.innerText = 'Update album title';
 
-                clickOnAlbum.id = album._id;
-                clickOnAlbum.dataset.id = album._id;
-                clickOnAlbum.innerText = album.title;
-                clickOnAlbum.artistId = album.artists;
-
-
-                li.addEventListener('click', function() {
-                    this.dataset.id;
-                    this.artistId;
-                    this.innerText;
-                    View.registerAlbumId(this);
-                });
-
                 clickOnAlbum.addEventListener('click', function() {
                     this.dataset.id;
                     this.artistId;
                     this.innerText;
-                    View.registerAlbumId(this);
+                    View.registerAlbumIdandArtistId(this);
                 });
 
                 deleteAlbum.addEventListener('click', function() {
@@ -832,12 +879,14 @@ const View = {
 
                 albumList.appendChild(ul);
                 ul.appendChild(li);
+                li.appendChild(clickOnAlbum);
 
                 albumContainer.appendChild(albumCard);
 
                 albumCard.appendChild(coverAlbum);
-                albumCard.appendChild(clickOnAlbum);
+                albumCard.appendChild(albumTitle);
                 albumCard.appendChild(albumArtist);
+
 
                 albumCard.appendChild(showAlbumAction);
                 albumCard.appendChild(albumCardAction);
@@ -853,16 +902,21 @@ const View = {
         View.filterAlbums();
     },
 
+      displayChosenAlbum(album){
+        let albumHeading = document.getElementById('albumHeading');
+        albumHeading.innerText = album.innerText;
+        return albumHeading;
+    },
 
-    registerAlbumId(album) {
-        let artistsId =
+
+    registerAlbumIdandArtistId(album) {
+        let artistId = album.artists;
             selectedArtist = album.artistId;
-        selectedAlbum = album.id;
+            selectedAlbum = album.id;
 
-        for (artist of selectedArtist) {
-            let artistId = artist._id;
+            View.displayChosenAlbum(album);
+
             Controller.registerTrackTitleToAlbumClickHandler(artistId);
-        }
     },
 
     showAllplaylists: document.getElementById("showAllplaylists"),
@@ -972,8 +1026,7 @@ const View = {
                 this.trackId;
                 this.dataset.id;
                 this.innerText;
-                Controller.trackArray(this);
-
+                Controller.registerTrackIdandPlaylistId(this);
             });
 
             inputCommentButton.addEventListener('click', function() {
