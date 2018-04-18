@@ -60,16 +60,38 @@ const FetchModel = {
         return fetch(`https://folksa.ga/api/albums/${albumID}?key=flat_eric`)
               .then((response) => response.json())
               .then((album) => {
+                const albumTracksContainer = document.createElement('ol');
+                const showAlbumTracks = document.createElement('button');
+                showAlbumTracks.className = 'showAlbumTracks';
+                showAlbumTracks.innerText = 'View tracks';
+            
                 for(let track of album.tracks){
                     const container = albumCard;
-                    const trackTitle = document.createElement('p');
+                    const trackTitle = document.createElement('li');
                     const deleteTrackButton = document.createElement('button');
-                    deleteTrackButton.innerText = 'Delete track';
+                    
+                    deleteTrackButton.className = 'deleteTrackButton';
+                    deleteTrackButton.innerText = 'Delete';
                     trackTitle.innerText = track.title;
-                    container.appendChild(trackTitle);
+                    
+                    container.appendChild(albumTracksContainer);
+                    container.appendChild(showAlbumTracks);
+                    
+                    albumTracksContainer.appendChild(trackTitle);
                     trackTitle.appendChild(deleteTrackButton);
                     deleteDataModel.registerDeleteTrackClickHandler(deleteTrackButton, track._id);
                 }
+            
+                albumTracksContainer.style.display = "none";
+
+                showAlbumTracks.addEventListener('click', function() {
+                    if (albumTracksContainer.style.display === "none") {
+                        albumTracksContainer.style.display = "block";
+                    } else {
+                        albumTracksContainer.style.display = "none";
+                    }
+                })
+            
               });
     },
 
@@ -78,6 +100,7 @@ const FetchModel = {
         return fetch(`https://folksa.ga/api/playlists/${playlistID}/comments?key=flat_eric`)
             .then((response) => response.json())
             .then((comments) => {
+            
                 for(comment of comments){
                     const container = viewCommentsButton.parentElement;
                     const commentContainer = document.createElement('div');
@@ -1084,24 +1107,22 @@ const View = {
                 
                 
                 singlePlaylistContainer.appendChild(singlePlaylistAction);
+                singlePlaylistContainer.appendChild(labelVote);
+                singlePlaylistContainer.appendChild(rating);
+                singlePlaylistContainer.appendChild(ratingButton);
+                
+                singlePlaylistContainer.appendChild(labelCommentBy)
+                singlePlaylistContainer.appendChild(inputCommentBy);
+                singlePlaylistContainer.appendChild(labelComment);
+                singlePlaylistContainer.appendChild(inputComment);
+                singlePlaylistContainer.appendChild(inputCommentButton);
                 singlePlaylistContainer.appendChild(viewComments);
                 
                 singlePlaylistContainer.appendChild(editPlaylistButton);
                 singlePlaylistAction.appendChild(labelEditPlaylist); 
                 singlePlaylistAction.appendChild(inputChangePlaylistTitle);
                 singlePlaylistAction.appendChild(updatePlaylist);
-                singlePlaylistAction.appendChild(deletePlaylist);
-         
-                singlePlaylistAction.appendChild(labelVote);
-                singlePlaylistAction.appendChild(rating);
-                singlePlaylistAction.appendChild(ratingButton);
-                
-                singlePlaylistAction.appendChild(labelCommentBy)
-                singlePlaylistAction.appendChild(inputCommentBy);
-                singlePlaylistAction.appendChild(labelComment);
-                singlePlaylistAction.appendChild(inputComment);
-                singlePlaylistAction.appendChild(inputCommentButton);
-                
+                singlePlaylistAction.appendChild(deletePlaylist);   
             };
 
 
