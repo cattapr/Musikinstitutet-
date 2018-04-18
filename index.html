@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">	
-	<title>Musikinstitutet</title>
-	<link rel="stylesheet" href="css/style.css">
-	<link href="https://fonts.googleapis.com/css?family=Barlow+Condensed:500|Raleway:400,500,900" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>Musikinstitutet</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Barlow+Condensed:500|Raleway:400,500,900" rel="stylesheet">
 </head>
 <body>
     <header>
@@ -33,8 +33,8 @@
     <div class="uploadContainer" id="submitMusic">
         <h2 class="uploadContainerHeading">Upload your music</h2>
         <div class="addArtist">
-        	<div id="errorMessage"><p id="errorText"><p></div>
-        	<div id="emptyInput"><p id="error"><p></div>
+            <div id="errorMessage"><p id="errorText"><p></div>
+            <div id="emptyInput"><p id="error"><p></div>
             <h3>Add artist</h3>
             <label for="artistName">Artist name</label>
             <input type="text" id="name" name="artistName"  placeholder="Artist name" required>
@@ -55,6 +55,7 @@
 
             <div id="addAlbum">
                 <h3 id="artistHeading"></h3>
+                 <p id="errorMsgCreateAlbum"></p>
                 <label for="albumTitle">Album name</label>
                 <input type="text" id="albumTitle" name="albumTitle" placeholder="Title of the album" required>
                 <label for="albumRelease">Release date</label>
@@ -94,9 +95,9 @@
            <input type="text" id="createdBy" name="createdBy" placeholder="Created By">
            <button id="playlistButton">Add playlist +</button>    
         </div>
-	</div>
+    </div>
 
-	
-	<script src="js/main.js"></script>
+    
+    <script src="js/main.js"></script>
 </body>
 </html>

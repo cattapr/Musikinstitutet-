@@ -13,14 +13,11 @@ const FetchModel = {
         return fetch('https://folksa.ga/api/artists?key=flat_eric&limit=50')
             .then((response) => response.json())
             .then((artists) => {
-                console.log(artists);
                 Controller.checkIfArtistExists(artists);
                 View.displayArtistList(artists);
             })
 
             .catch((error) => {
-                console.log(error);
-                console.log('det funkar inte');
                 View.errorMessage();
             });
     },
@@ -29,12 +26,10 @@ const FetchModel = {
         return fetch('https://folksa.ga/api/albums?key=flat_eric&limit=20&populateArtists=true')
             .then((response) => response.json())
             .then((albums) => {
-                console.log('Albums', albums);
                 View.displayAlbumList(albums);
             })
-
             .catch((error) => {
-                console.log(error);
+
             });
     },
 
@@ -44,10 +39,9 @@ const FetchModel = {
             .then((response) => response.json())
             .then((tracks) => {
                 View.displayTracksList(tracks);
-                console.log('tracks:', tracks);
             })
             .catch((error) => {
-                console.log(error);
+
             });
     },
 
@@ -55,40 +49,31 @@ const FetchModel = {
         return fetch('https://folksa.ga/api/playlists?key=flat_eric&limit=10')
             .then((response) => response.json())
             .then((playlists) => {
-                console.log('playlist:', playlists);
                 View.displayPlayLists(playlists);
             })
             .catch((error) => {
-                console.log(error);
+    
             });
     },
 
-    fetchComments() {
-        return fetch(`https://folksa.ga/api/comments?key=flat_eric`)
-            .then((response) => response.json())
-            .then((comments) => {
-                console.log('All comments: ', comments);
-            });
-    },
-
-    fetchCommentsforSpecifikPlaylist(playlistID) {
-        let playlist = playlistID.id;
-        return fetch(`https://folksa.ga/api/playlists/${playlist}/comments?key=flat_eric`)
+     fetchCommentsforSpecificPlaylist(viewCommentsButton) {
+        let playlistID = viewCommentsButton.dataset.id;
+        return fetch(`https://folksa.ga/api/playlists/${playlistID}/comments?key=flat_eric`)
             .then((response) => response.json())
             .then((comments) => {
                 for(comment of comments){
-                const container = playlistID.parentElement;
-                const commentBody = document.createElement('p');
-                const commentUser = document.createElement('p');
-                const deleteComment = document.createElement('button');
-                deleteComment.innerText = 'Delete comment';
-                commentBody.innerHTML = `Comment: ${comment.body}`;
-                commentUser.innerHTML = `By: ${comment.username}`;
-                container.appendChild(commentBody);
-                container.appendChild(commentUser);
-                container.appendChild(deleteComment);
-                deleteDataModel.registerDeleteCommentClickHandler(deleteComment, comment._id);
-             };
+                    const container = viewCommentsButton.parentElement;
+                    const commentBody = document.createElement('p');
+                    const commentUser = document.createElement('p');
+                    const deleteComment = document.createElement('button');
+                    deleteComment.innerText = 'Delete comment';
+                    commentBody.innerHTML = `Comment: ${comment.body}`;
+                    commentUser.innerHTML = `By: ${comment.username}`;
+                    container.appendChild(commentBody);
+                    container.appendChild(commentUser);
+                    container.appendChild(deleteComment);
+                    deleteDataModel.registerDeleteCommentClickHandler(deleteComment, comment._id);
+                };
             });
     }
 };
@@ -106,12 +91,9 @@ const postModel = {
             })
             .then((response) => response.json())
             .then((artist) => {
-                console.log(artist);
-                updateModel.updateArtists();
+                updateModel.fetchUpdatedArtists();
             })
             .catch((error) => {
-                console.log(error);
-                console.log('det funkar inte');
                 View.errorMessage();
             });
     },
@@ -125,17 +107,13 @@ const postModel = {
                 },
                 body: JSON.stringify(album)
             })
-
             .then((response) => response.json())
             .then((albums) => {
-                console.log('New album:', albums);
                 selectedAlbum = Controller.getAlbumId(albums);
                 selectedArtist = Controller.getArtistId(albums);
+                fetchUpdatedAlbums();
             })
-
             .catch((error) => {
-                console.log(error);
-                console.log('det funkar inte');
                 View.errorMessage();
             });
     },
@@ -149,15 +127,10 @@ const postModel = {
                 },
                 body: JSON.stringify(track)
             })
-
             .then((response) => response.json())
             .then((postedTrack) => {
-                console.log('One track:', postedTrack);
             })
-
             .catch((error) => {
-                console.log(error);
-                console.log('det funkar inte');
                 View.errorMessage();
             });
     },
@@ -174,30 +147,27 @@ const postModel = {
 
             .then((response) => response.json())
             .then((playlist) => {
-                console.log(playlist);
-            })
 
+            })
             .catch((error) => {
-                console.log(error);
-                console.log('det funkar inte');
                 View.errorMessage();
             });
     },
 
-    getPlaylistComment(playlistID) {
-        let playlistid = playlistID;
+    getPlaylistComment(playlistid) {
+        let playlistID = playlistid;
 
         let comment = {
             playlist: playlistid,
             body: commentValue,
             username: commentBy
         }
-        postModel.postCommentToPlaylist(playlistid, comment)
+        postModel.postCommentToPlaylist(playlistID, comment)
     },
 
 
-    postCommentToPlaylist(playlistid, comment) {
-        return fetch(`https://folksa.ga/api/playlists/${playlistid}/comments?key=flat_eric`, {
+    postCommentToPlaylist(playlistID, comment) {
+        return fetch(`https://folksa.ga/api/playlists/${playlistID}/comments?key=flat_eric`, {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -208,23 +178,20 @@ const postModel = {
 
             .then((response) => response.json())
             .then((playlist) => {
-                console.log(playlist);
             })
 
             .catch((error) => {
-                console.log(error);
-                console.log('det funkar inte');
                 View.errorMessage();
             });
     },
 
-    playlistRating(playlist) {
-        let playlistID = playlist;
+    playlistRating(playlistid) {
+        let playlistID = playlistid;
         let vote = ratingValue;
-        postModel.voteOnPlaylist(playlistID, vote);
+        postModel.postVoteToPlaylist(playlistID, vote);
     },
 
-    voteOnPlaylist(playlistID, vote) {
+    postVoteToPlaylist(playlistID, vote) {
         return fetch(`https://folksa.ga/api/playlists/${playlistID}/vote?key=flat_eric`, {
                 method: 'POST',
                 headers: {
@@ -236,7 +203,6 @@ const postModel = {
 
             .then((response) => response.json())
             .then((playlist) => {
-                console.log(playlist);
             });
     }
 };
@@ -244,29 +210,24 @@ const postModel = {
 
 const updateModel = {
 
-    updateAlbums() {
+    fetchUpdatedAlbums() {
         return fetch('https://folksa.ga/api/albums?key=flat_eric')
             .then((response) => response.json())
             .then((albums) => {
-                console.log('Albums:', albums);
+                View.displayAlbumList(albums);
             })
             .catch((error) => {
-                console.log(error);
-                console.log('det funkar inte');
                 View.errorMessage();
             });
     },
 
-    updateArtists() {
+    fetchUpdatedArtists() {
         return fetch('https://folksa.ga/api/artists?key=flat_eric&sort=asc&limit=50')
             .then((response) => response.json())
             .then((artists) => {
-                console.log('update:', artists);
                 View.displayArtistList(artists);
             })
             .catch((error) => {
-                console.log(error);
-                console.log('det funkar inte');
                 View.errorMessage();
             });
     },
@@ -277,11 +238,10 @@ const updateModel = {
         }
 
         let albumID = album;
-        console.log(updates, albumID);
-        updateModel.updateAspecifikAlbum(albumID, updates);
+        updateModel.updateAlbumTitle(albumID, updates);
     },
 
-    updateAspecifikAlbum(albumID, updates) {
+    updateAlbumTitle(albumID, updates) {
         return fetch(`https://folksa.ga/api/albums/${albumID}?key=flat_eric`, {
                 method: 'PATCH',
                 headers: {
@@ -292,7 +252,7 @@ const updateModel = {
             })
             .then((response) => response.json())
             .then((album) => {
-                console.log('Update album Title:', album);
+
             });
     },
 
@@ -302,12 +262,10 @@ const updateModel = {
         }
 
         let playlistID = playlist;
-        console.log(updates, playlistID);
-        updateModel.updateAspecifikPlaylist(playlistID, updates);
-
+        updateModel.updatePlaylistTitle(playlistID, updates);
     },
 
-    updateAspecifikPlaylist(playlistID, updates) {
+    updatePlaylistTitle(playlistID, updates) {
         return fetch(`https://folksa.ga/api/playlists/${playlistID}?key=flat_eric`, {
                 method: 'PATCH',
                 headers: {
@@ -318,7 +276,6 @@ const updateModel = {
             })
             .then((response) => response.json())
             .then((playlist) => {
-                console.log('Update playlist Title:', playlist);
             });
     }
 };
@@ -326,7 +283,8 @@ const updateModel = {
 
 const deleteDataModel = {
 
-    deleteArtist(artistID) {
+    deleteArtist(deleteArtistButton) {
+        let artistID = deleteArtistButton.dataset.id;
         return fetch(`https://folksa.ga/api/artists/${artistID}?key=flat_eric`, {
                 method: 'DELETE',
                 headers: {
@@ -336,17 +294,15 @@ const deleteDataModel = {
             })
             .then((response) => response.json())
             .then((artist) => {
-                console.log(artist);
             })
             .catch((error) => {
-                console.log(error);
-                console.log('det funkar inte');
                 View.errorMessage();
             });
     },
 
 
-    deleteAlbum(albumID) {
+    deleteAlbum(deleteAlbumButton) {
+        let albumID = deleteAlbumButton.dataset.id;
         return fetch(`https://folksa.ga/api/albums/${albumID}?key=flat_eric`, {
                 method: 'DELETE',
                 headers: {
@@ -356,16 +312,14 @@ const deleteDataModel = {
             })
             .then((response) => response.json())
             .then((album) => {
-                console.log(album);
             })
             .catch((error) => {
-                console.log(error);
-                console.log('det funkar inte');
                 View.errorMessage();
             });
     },
 
-    deleteTrack(trackID) {
+    deleteTrack(deleteTrackButton) {
+        let trackID = deleteTrackButton.dataset.id;
         return fetch(`https://folksa.ga/api/tracks/${trackID}?key=flat_eric`, {
                 method: 'DELETE',
                 headers: {
@@ -375,16 +329,14 @@ const deleteDataModel = {
             })
             .then((response) => response.json())
             .then((track) => {
-                console.log(track);
             })
             .catch((error) => {
-                console.log(error);
-                console.log('det funkar inte');
                 View.errorMessage();
             });
     },
 
-    deletePlaylist(playlistID) {
+    deletePlaylist(deletePlaylistButton) {
+        let playlistID = deletePlaylistButton.dataset.id;
         return fetch(`https://folksa.ga/api/playlists/${playlistID}?key=flat_eric`, {
                 method: 'DELETE',
                 headers: {
@@ -394,12 +346,9 @@ const deleteDataModel = {
             })
             .then((response) => response.json())
             .then((playlist) => {
-                console.log(playlist);
             })
 
             .catch((error) => {
-                console.log(error);
-                console.log('det funkar inte');
                 View.errorMessage();
             });
     },
@@ -416,7 +365,6 @@ const deleteDataModel = {
                 })
                 .then((response) => response.json())
                 .then((comment) => {
-                    console.log(comment);
                 });
         }
     }
@@ -425,7 +373,7 @@ const deleteDataModel = {
 
 
 const Controller = {
-
+//Ska den tas bort??????? ''''''''''''''''''''***************
     checkIfArtistExists(artists) {
         for (var i = 0; i < artists.length; i++) {
             var id = artists[i]._id;
@@ -443,13 +391,12 @@ const Controller = {
 
     getAlbumId(albums) {
         let albumId = albums._id;
-        console.log(albumId);
         return albumId;
     },
 
     getArtistId(albums) {
         let artistId = albums.artists.join(',');
-        console.log(artistId);
+
         return artistId;
     },
 
@@ -496,7 +443,8 @@ const Controller = {
             let albumGenre = View.albumGenre();
 
             if (albumTitle === "" || albumReleaseDate === "" || albumGenre === "") {
-                console.log("you need to fill in all fields!");
+                let errorMessage = document.getElementById('errorMsgCreateAlbum');
+                errorMessage.innerText = 'You need to fill in all fields!';
 
             } else {
 
@@ -513,8 +461,9 @@ const Controller = {
         }
     },
 
-    addTrackButton() {
-        const addTrackButton = document.getElementById('trackButton');
+    addTrackButton: document.getElementById('trackButton'),
+
+    registerAddTrackButton() {   
         addTrackButton.onclick = function() {
             const errorMessage = document.getElementById('addTrackErrorMsg');
             let errorMessageText = document.getElementById('errorMsg');
@@ -532,7 +481,6 @@ const Controller = {
                 album: selectedAlbum, // Must be a string with comma separated values
                 genres: "Folk,Rock"
             }
-            console.log(track);
             postModel.postTrack(track);
         }
     },
@@ -557,7 +505,6 @@ const Controller = {
                 coverImage: "https://www.internetmuseum.se/wordpress/wp-content/uploads/compisknappar-504x329.jpg",
                 coverImageColor: "#000"
             }
-            console.log('hej');
             postModel.postPlaylist(playlist);
         }
     },
@@ -567,7 +514,6 @@ const Controller = {
         let playlist = playlistID.dataset.id;
 
         Controller.postTrackToPlaylist(playlist, tracks);
-        console.log('Innehåller den id?', tracks);
     },
 
     postTrackToPlaylist(playlist, tracks) {
@@ -581,7 +527,6 @@ const Controller = {
             })
             .then((response) => response.json())
             .then((playlist) => {
-                console.log('new track to playlist:', playlist);
             });
     }
 };
@@ -645,6 +590,7 @@ const View = {
 
     input2: document.getElementById("myInput2"),
 
+
     filterArtists() {
         View.input.addEventListener('keyup', function() {
 
@@ -660,13 +606,12 @@ const View = {
                 } else {
                     li[i].style.display = "none";
                 }
-            } //End of loop
+            } 
         })
     },
 
     filterAlbums() {
         View.input1.addEventListener('keyup', function() {
-            console.log('all');
             let filter, ul, li, i;
             filter = View.input1.value.toUpperCase();
 
@@ -679,7 +624,7 @@ const View = {
                 } else {
                     li[i].style.display = "none";
                 }
-            } //End of loop
+            } 
         })
     },
 
@@ -697,7 +642,7 @@ const View = {
                 } else {
                     li[i].style.display = "none";
                 }
-            } //End of loop
+            } 
         })
     },
 
@@ -708,6 +653,7 @@ const View = {
             const ul = document.getElementById('ul');
             const li = document.createElement('li');
             const deleteButton = document.createElement('button');
+            deleteButton.dataset.id = artist._id;
             deleteButton.innerText = 'Delete';
             deleteButton.className = 'deleteButtonArtist';
             const clickOnArtist = document.createElement('a');
@@ -722,7 +668,7 @@ const View = {
             });
 
             deleteButton.addEventListener('click', function() {
-                deleteDataModel.deleteArtist(clickOnArtist.id);
+                deleteDataModel.deleteArtist(this);
 
             });
 
@@ -731,7 +677,7 @@ const View = {
             li.appendChild(clickOnArtist);
             li.appendChild(deleteButton);
 
-        } //End of loop
+        } 
         View.filterArtists();
     },
 
@@ -755,6 +701,7 @@ const View = {
             const li = document.createElement('li');
             const clickOnTrack = document.createElement('a');
             const deleteTrack = document.createElement('button');
+            deleteTrack.dataset.id = track._id;
             deleteTrack.className = 'deleteTrack';
             deleteTrack.innerText = 'Delete Track';
             clickOnTrack.id = track._id;
@@ -770,14 +717,14 @@ const View = {
             });
 
             deleteTrack.addEventListener('click', function() {
-                deleteDataModel.deleteTrack(clickOnTrack.id);
+                deleteDataModel.deleteTrack(this);
             });
 
             tracksList.appendChild(ul);
             ul.appendChild(li);
             li.appendChild(clickOnTrack);
             li.appendChild(deleteTrack);
-        } //End of loop
+        } 
 
         View.filterTracks();
     },
@@ -785,8 +732,6 @@ const View = {
     addPlaylist: document.getElementById('playlistButton'),
 
     addTrackToPlaylist(song) {
-        console.log('Playlist id:', song.id);
-        console.log('Songtrack id:', song.trackId);
         selectTrack = song.trackId;
         Controller.registerTrackToPlaylistClickHandler();
 
@@ -811,6 +756,7 @@ const View = {
 
                 const showAlbumAction = document.createElement('button');
                 const deleteAlbum = document.createElement('button');
+                deleteAlbum.dataset.id = album._id;
                 const updateAlbum = document.createElement('button');
 
                 albumCard.className = 'albumCard';
@@ -858,7 +804,7 @@ const View = {
                 });
 
                 deleteAlbum.addEventListener('click', function() {
-                    deleteDataModel.deleteAlbum(clickOnAlbum.id);
+                    deleteDataModel.deleteAlbum(this);
                 });
 
                 updateAlbum.addEventListener('click', function() {
@@ -902,15 +848,12 @@ const View = {
 
 
     registerAlbumId(album) {
-        console.log('Album Id:', album.id);
-        console.log('Artist Id of clicked album:', album.artistId);
         let artistsId =
             selectedArtist = album.artistId;
         selectedAlbum = album.id;
 
         for (artist of selectedArtist) {
             let artistId = artist._id;
-            console.log(artistId);
             Controller.registerTrackTitleToAlbumClickHandler(artistId);
         }
     },
@@ -977,6 +920,7 @@ const View = {
             showMorePlaylist.className = 'showMorePlaylist';
 
             //Button names
+            deletePlaylist.dataset.id = playlist._id;
             deletePlaylist.innerText = 'Delete Playlist';
             updatePlaylist.innerText = 'Update Playlist';
             showMorePlaylist.innerHTML = 'View songs';
@@ -985,7 +929,7 @@ const View = {
             singlePlaylistContainer.className = "singlePlaylistContainer";
 
             let viewComments = document.createElement('button');
-            viewComments.id = playlist._id;
+            viewComments.dataset.id = playlist._id;
             viewComments.innerText = 'View all comments';
 
             clickOnPlaylist.id = playlist._id;
@@ -1009,7 +953,7 @@ const View = {
             });
 
             deletePlaylist.addEventListener('click', function() {
-                deleteDataModel.deletePlaylist(clickOnPlaylist.id);
+                deleteDataModel.deletePlaylist(this);
             });
 
             updatePlaylist.addEventListener('click', function() {
@@ -1023,7 +967,7 @@ const View = {
             });
 
             viewComments.addEventListener('click', function() {
-                FetchModel.fetchCommentsforSpecifikPlaylist(this);
+                FetchModel.fetchCommentsforSpecificPlaylist(this);
             });
 
 
@@ -1111,8 +1055,7 @@ FetchModel.fetchArtists();
 FetchModel.fetchAlbums();
 FetchModel.fetchTracks();
 FetchModel.fetchPlaylist();
-FetchModel.fetchComments();
-Controller.addAlbumbutton();
+Controller.registerAddTrackButton();
 Controller.addTrackButton();
 Controller.createPlaylistButton();
 Controller.registerCreateArtistClickHandler();
