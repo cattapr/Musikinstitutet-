@@ -591,7 +591,6 @@ const View = {
         errorMessageContainer.appendChild(errorMessage);
     },
 
-
     getinputName() {
         let getinputName = document.getElementById('name').value;
         return getinputName;
@@ -967,11 +966,11 @@ const View = {
             inputComment.setAttribute('type', 'text');
             inputComment.setAttribute('rows', 8);
             inputComment.setAttribute('cols', 50);
-            inputComment.setAttribute('placeholder', 'Write your heart out.')
+            inputComment.setAttribute('placeholder', 'Write your heart out.');
             
             let inputCommentBy = document.createElement('input');
             inputCommentBy.setAttribute('type', 'text');
-            inputCommentBy.setAttribute('placeholder', 'Ex. The Commentor')
+            inputCommentBy.setAttribute('placeholder', 'Ex. The Commentor');
             
             const inputCommentButton = document.createElement('button');
             inputCommentButton.className = 'inputCommentButton';
