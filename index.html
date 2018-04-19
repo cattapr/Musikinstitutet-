@@ -1,24 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Musikinstitutet</title>
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css?family=Raleway:400,500,900" rel="stylesheet">
 </head>
+
 <body>
     <header>
         <div class="header">
             <div class="headerText">
                 <h1>Musikinstitutet</h1>
                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Laboriosam, quia? Cupiditate quidem maiores nostrum tempora esse nam atque.</p>
-                <a href="#addPlayList"><button class="toPlaylistButton">Create a playlist</button></a>
-                <a href="#submitMusic"><button class="toSubmitButton">Submit music</button></a>
+                <a href="#addPlayList">
+                    <button class="toPlaylistButton">Create a playlist</button>
+                </a>
+                <a href="#submitMusic">
+                    <button class="toSubmitButton">Submit music</button>
+                </a>
             </div>
         </div>
     </header>
-    
     <div class="listContainer">
         <div class="albumWrap">
             <h2 class="albumHeader">Latest albums</h2>
@@ -29,33 +34,36 @@
             <ul id="playList"></ul>
         </div>
     </div>
-    
     <div class="uploadContainer" id="submitMusic">
         <h2 class="uploadContainerHeading">Upload your music</h2>
         <div class="addArtist">
-            <div id="errorMessage"><p id="errorText"><p></div>
-            <div id="emptyInput"><p id="error"><p></div>
+            <div id="errorMessage">
+                <p id="errorText"><p>
+            </div>
+            <div id="emptyInput">
+                <p id="error"><p>
+            </div>
             <h3>Add artist</h3>
             <label for="artistName">Artist name</label>
-            <input type="text" id="name" name="artistName"  placeholder="Artist name" required>
+            <input type="text" id="name" name="artistName" placeholder="Artist name" required>
             <label for="artistGenre">Genre</label>
             <input type="text" id="genre" name="artistGenre" placeholder="genre" required>
             <input type="submit" class="submitButton" id="submitButton" value="Submit">
-        </div> 
-
+        </div>
         <div class="addAlbum">
             <h3>Create album</h3>
             <label>Choose artist</label>
             <input type="text" id="myInput" placeholder="Search artist name" title="Search artist name">
-            <div id="chooseArtistErrorMsg"><p id="errorMsgText"></p></div>
+            <div id="chooseArtistErrorMsg">
+                <p id="errorMsgText"></p>
+            </div>
             <div id="deleteAnArtist"></div>
             <div id="artists">
                 <ul id="ul"></ul>
             </div>
-
             <div id="addAlbum">
                 <h3 id="artistHeading"></h3>
-                 <p id="errorMsgCreateAlbum"></p>
+                <p id="errorMsgCreateAlbum"></p>
                 <label for="albumTitle">Album name</label>
                 <input type="text" id="albumTitle" name="albumTitle" placeholder="Title of the album" required>
                 <label for="albumRelease">Release date</label>
@@ -65,7 +73,6 @@
                 <button id="albumButton">Add album +</button>
             </div>
         </div>
-
         <div class="addTrack" id="addTrack">
             <h3>Add tracks</h3>
             <label for="searchAlbums">Choose album</label>
@@ -73,16 +80,15 @@
             <div id="albums">
                 <ul id="albumslist"></ul>
             </div>
-            <div id="addTrackErrorMsg"><p id="errorMsg"><p></div>
+            <div id="addTrackErrorMsg">
+                <p id="errorMsg"><p>
+            </div>
             <p id="errorMsgAddTrack"></p>
             <h3 id="albumHeading"></h3>
             <label for="albumTrack">Track name</label>
-           <input type="text" id="albumTrack" name="albumTrack" placeholder="Title of the track">
-           <button id="trackButton">Add track +</button>
-           
-
+            <input type="text" id="albumTrack" name="albumTrack" placeholder="Title of the track">
+            <button id="trackButton">Add track +</button>
         </div>
-
         <div class="addPlaylist" id="addPlayList">
             <h3>Create Playlist</h3>
             <label for="searchTrack">Choose track</label>
@@ -90,17 +96,18 @@
             <div id="tracks">
                 <ul id="tracklist"></ul>
             </div>
-            <div id="createPlaylistErrorMsg"><p id="errorTextMsg"><p></div>
+            <div id="createPlaylistErrorMsg">
+                <p id="errorTextMsg"><p>
+            </div>
             <h3 id="trackHeading"></h3>
             <label for="createPlaylist">Playlist name</label>
-           <input type="text" id="createdPlaylist" name="createPlaylist" placeholder="Title of the playlist">
-           <label for="createdBy">Your name</label>
-           <input type="text" id="createdBy" name="createdBy" placeholder="Created By">
-           <button id="playlistButton">Add playlist +</button>    
+            <input type="text" id="createdPlaylist" name="createPlaylist" placeholder="Title of the playlist">
+            <label for="createdBy">Your name</label>
+            <input type="text" id="createdBy" name="createdBy" placeholder="Created By">
+            <button id="playlistButton">Add playlist +</button>
         </div>
     </div>
-
-    
     <script src="js/main.js"></script>
 </body>
+
 </html>

@@ -16,7 +16,6 @@ const FetchModel = {
                 Controller.checkIfArtistExists(artists);
                 View.displayArtistList(artists);
             })
-
             .catch((error) => {
                 View.errorMessage();
             });
@@ -92,7 +91,7 @@ const FetchModel = {
                     }
                 })
             
-              });
+            });
     },
 
      fetchCommentsforSpecificPlaylist(viewCommentsButton) {
@@ -125,7 +124,7 @@ const FetchModel = {
                     };
                  }
             });
-        }
+    }
 };
 
 const postModel = {
@@ -730,7 +729,6 @@ const View = {
     },
 
     displayArtistList(artists) {
-
         for (let artist of artists) {
             const artistList = document.getElementById('artists');
             const ul = document.getElementById('ul');
@@ -1093,15 +1091,13 @@ const View = {
                             <h4>Tracks</h4>
                             `;     
                 for (let track of playlist.tracks) {
-                   
-                    
+                     
                     for (let artist of track.artists) {
 
                         singlePlaylistContainer.innerHTML += `
                                 
                             <li>${artist.name} - ${track.title}</li>
                                 `;
-
                     }
                 }
                 
