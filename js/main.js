@@ -100,26 +100,32 @@ const FetchModel = {
         return fetch(`https://folksa.ga/api/playlists/${playlistID}/comments?key=flat_eric`)
             .then((response) => response.json())
             .then((comments) => {
-            
-                for(comment of comments){
-                    const container = viewCommentsButton.parentElement;
-                    const commentContainer = document.createElement('div');
-                    const commentBody = document.createElement('p');
-                    const commentUser = document.createElement('p');
-                    const deleteComment = document.createElement('button');
-                    commentContainer.className = 'commentContainer';
-                    deleteComment.innerText = 'Delete comment';
-                    deleteComment.className = 'deleteComment';
-                    commentBody.innerHTML = `Comment: ${comment.body}`;
-                    commentUser.innerHTML = `By: ${comment.username}`;
-                    container.appendChild(commentContainer);
-                    commentContainer.appendChild(commentBody);
-                    commentContainer.appendChild(commentUser);
-                    commentContainer.appendChild(deleteComment);
-                    deleteDataModel.registerDeleteCommentClickHandler(deleteComment, comment._id);
-                };
+                if(comments == ""){
+                    const noCommentsMessage = View.noCommentsToShow();
+                    const noCommentsContainer = viewCommentsButton.parentElement;
+                    noCommentsContainer.appendChild(noCommentsMessage);
+
+                } else {
+                    for(comment of comments){
+                        const container = viewCommentsButton.parentElement;
+                        const commentContainer = document.createElement('div');
+                        const commentBody = document.createElement('p');
+                        const commentUser = document.createElement('p');
+                        const deleteComment = document.createElement('button');
+                        commentContainer.className = 'commentContainer';
+                        deleteComment.innerText = 'Delete comment';
+                        deleteComment.className = 'deleteComment';
+                        commentBody.innerHTML = `Comment: ${comment.body}`;
+                        commentUser.innerHTML = `By: ${comment.username}`;
+                        container.appendChild(commentContainer);
+                        commentContainer.appendChild(commentBody);
+                        commentContainer.appendChild(commentUser);
+                        commentContainer.appendChild(deleteComment);
+                        deleteDataModel.registerDeleteCommentClickHandler(deleteComment, comment._id);
+                    };
+                 }
             });
-    }
+        }
 };
 
 const postModel = {
@@ -614,6 +620,12 @@ const View = {
         errorMessageContainer.appendChild(errorMessage);
     },
 
+    noCommentsToShow(){
+        const noCommentsToShowMessage = document.createElement('label');
+        noCommentsToShowMessage.innerText = 'There are no comments on this playlist just yet!';
+        return noCommentsToShowMessage;
+    },
+
     getinputName() {
         let getinputName = document.getElementById('name').value;
         return getinputName;
@@ -704,7 +716,7 @@ const View = {
             let filter, ul, li, a, i;
             filter = View.input2.value.toUpperCase();
 
-            ul = document.getElementById("tracklist");
+            ul = document.getElementById('tracklist');
             li = ul.getElementsByTagName("li");
 
             for (i = 0; i < li.length; i++) {
@@ -780,7 +792,6 @@ const View = {
         for (let track of tracks) {
             const tracksList = document.getElementById('tracks');
             const ul = document.getElementById('tracklist');
-            ul.className = 'tracklist';
             const li = document.createElement('li');
             const clickOnTrack = document.createElement('a');
             const deleteTrack = document.createElement('button');
@@ -811,7 +822,6 @@ const View = {
         } 
 
         View.filterTracks();
-        View.filterTracksinPlaylistContainer();
     },
 
     addPlaylist: document.getElementById('playlistButton'),
@@ -1045,7 +1055,7 @@ const View = {
             clickOnPlaylist.innerText = '+';
             clickOnPlaylist.createdBy = playlist.createdBy;
             clickOnPlaylist.trackId = selectTrack;
-    
+
             clickOnPlaylist.addEventListener('click', function() {
                 this.trackId;
                 this.dataset.id;
@@ -1107,6 +1117,7 @@ const View = {
                 
                 
                 singlePlaylistContainer.appendChild(singlePlaylistAction);
+
                 singlePlaylistContainer.appendChild(labelVote);
                 singlePlaylistContainer.appendChild(rating);
                 singlePlaylistContainer.appendChild(ratingButton);
