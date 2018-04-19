@@ -11,6 +11,7 @@ a, button {
     cursor: pointer;
 }
 
+
 /*------------------------------
           INPUT
 -------------------------------*/
@@ -283,6 +284,10 @@ input[type=submit], #albumButton, #trackButton, #playlistButton, .ratingButton, 
 }
 
 #albumslist li {
+    display: none;
+}
+
+#playlistList li {
     display: none;
 }
 

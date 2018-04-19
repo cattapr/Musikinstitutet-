@@ -63,10 +63,13 @@ const FetchModel = {
                 const showAlbumTracks = document.createElement('button');
                 showAlbumTracks.className = 'showAlbumTracks';
                 showAlbumTracks.innerText = 'View tracks';
+                showAlbumTracks.style = 'margin-left:3px';
             
                 for(let track of album.tracks){
                     const container = albumCard;
                     const trackTitle = document.createElement('li');
+                    trackTitle.className = 'albumTrackTitle';
+                    trackTitle.style = 'margin-bottom:9px';
                     const deleteTrackButton = document.createElement('button');
                     
                     deleteTrackButton.className = 'deleteTrackButton';
@@ -280,6 +283,18 @@ const updateModel = {
                 View.errorMessage();
             });
     },
+
+      fetchUpdatedPlaylist() {
+        return fetch('https://folksa.ga/api/artists?key=flat_eric&limit=50&sort=desc')
+            .then((response) => response.json())
+            .then((playlists) => {
+                View.displayPlayLists(playlists);
+            })
+            .catch((error) => {
+                View.errorMessage();
+            });
+    },
+
 
     changeAlbumTitle(album) {
         let updates = {
@@ -605,6 +620,7 @@ const Controller = {
             })
             .then((response) => response.json())
             .then((playlist) => {
+                console.log('new', playlist)
             });
     }
 };
@@ -673,6 +689,8 @@ const View = {
 
     input2: document.getElementById("myInput2"),
 
+    input3: document.getElementById("myInput3"),
+
     filterArtists() {
         View.input.addEventListener('keyup', function() {
 
@@ -716,6 +734,24 @@ const View = {
             filter = View.input2.value.toUpperCase();
 
             ul = document.getElementById('tracklist');
+            li = ul.getElementsByTagName("li");
+
+            for (i = 0; i < li.length; i++) {
+                if (li[i].innerText.toUpperCase().indexOf(filter) > -1) {
+                    li[i].style.display = "block";
+                } else {
+                    li[i].style.display = "none";
+                }
+            } 
+        })
+    },
+
+    filterPlaylist() {
+        View.input3.addEventListener('keyup', function() {
+            let filter, ul, li, a, i;
+            filter = View.input3.value.toUpperCase();
+
+            ul = document.getElementById('playlistList');
             li = ul.getElementsByTagName("li");
 
             for (i = 0; i < li.length; i++) {
@@ -979,6 +1015,11 @@ const View = {
 
         for (let playlist of playlists) {
             const playlistContainer = document.getElementById('playlistContainer');
+            const searchPlaylist = document.getElementById('playlistlist');
+            const ul = document.getElementById('playlistList');
+            const li = document.createElement('li');
+            li.style = 'margin-bottom:5px';
+            li.innerText = playlist.title;
 
             let inputChangePlaylistTitle = document.createElement('input');
             inputChangePlaylistTitle.setAttribute('type', 'text');
@@ -1009,7 +1050,7 @@ const View = {
 
             const clickOnPlaylist = document.createElement('button');
             clickOnPlaylist.className = 'clickOnPlaylist';
-
+            clickOnPlaylist.style = 'margin-left:7px';
             const deletePlaylist = document.createElement('button');
             const updatePlaylist = document.createElement('button');
             const showMorePlaylist = document.createElement('button');
@@ -1055,6 +1096,7 @@ const View = {
             clickOnPlaylist.trackId = selectTrack;
 
             clickOnPlaylist.addEventListener('click', function() {
+                this.id;
                 this.trackId;
                 this.dataset.id;
                 this.innerText;
@@ -1111,7 +1153,10 @@ const View = {
                     }
                 })
                 
-                
+                searchPlaylist.appendChild(ul);
+                ul.appendChild(li);
+                li.appendChild(clickOnPlaylist);
+
                 singlePlaylistContainer.appendChild(singlePlaylistAction);
 
                 singlePlaylistContainer.appendChild(labelVote);
@@ -1180,6 +1225,7 @@ const View = {
             })
 
             renderHtmlSinglePlaylist();
+            View.filterPlaylist();
         } //End of loop
     },
 };
