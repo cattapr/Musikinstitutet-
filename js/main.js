@@ -181,6 +181,7 @@ const postModel = {
             })
             .then((response) => response.json())
             .then((postedTrack) => {
+                
             })
             .catch((error) => {
                 View.errorMessage();
@@ -199,10 +200,26 @@ const postModel = {
 
             .then((response) => response.json())
             .then((playlist) => {
-
+                updateModel.fetchUpdatedPlaylist();
             })
             .catch((error) => {
                 View.errorMessage();
+            });
+    },
+
+
+       postTrackToPlaylist(playlist, tracks) {
+        return fetch(`https://folksa.ga/api/playlists/${playlist}/tracks?key=flat_eric`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ tracks: tracks })
+            })
+            .then((response) => response.json())
+            .then((playlist) => {
+                updateModel.fetchUpdatedPlaylist();
             });
     },
 
@@ -285,7 +302,7 @@ const updateModel = {
     },
 
       fetchUpdatedPlaylist() {
-        return fetch('https://folksa.ga/api/artists?key=flat_eric&limit=50&sort=desc')
+        return fetch('https://folksa.ga/api/playlists?key=flat_eric&limit=50&sort=desc')
             .then((response) => response.json())
             .then((playlists) => {
                 View.displayPlayLists(playlists);
@@ -478,7 +495,6 @@ const Controller = {
 
     getArtistId(albums) {
         let artistId = albums.artists.join(',');
-
         return artistId;
     },
 
@@ -530,7 +546,6 @@ const Controller = {
                 errorMessage.innerText = 'You need to fill in all fields!';
 
             } else {
-
                 let album = {
                     title: View.getinputAlbumTitle(),
                     artists: id, //Can be multiple IDs, must be comma separated string if multiple
@@ -556,7 +571,7 @@ const Controller = {
 
     trackButton: document.getElementById('trackButton'),
 
-    registerTrackTitleToAlbumClickHandler(artistId) {
+    registerTrackTitleToAlbumClickHandler() {
         Controller.trackButton.onclick = function createTrack() {
             let trackTitle = View.getinputAlbumTrack();
             if (trackTitle === "") {
@@ -567,13 +582,13 @@ const Controller = {
 
             let track = {
                 title: View.getinputAlbumTrack(),
-                artists: artistId, // Must be a string with comma separated values
+                artists: selectedArtist, // Must be a string with comma separated values
                 album: selectedAlbum, // Must be a string with comma separated values
                 genres: "Folk,Rock"
             }
-            postModel.postTrack(track);
-        }
-     }
+             postModel.postTrack(track);
+            }
+         }
 
     },
 
@@ -602,27 +617,12 @@ const Controller = {
         }
     },
 
+
     registerTrackIdandPlaylistId(clickOnPlaylistButton) {
         let tracks = selectTrack;
         let playlist = clickOnPlaylistButton.dataset.id;
-
-        Controller.postTrackToPlaylist(playlist, tracks);
+        postModel.postTrackToPlaylist(playlist, tracks);
     },
-
-    postTrackToPlaylist(playlist, tracks) {
-        return fetch(`https://folksa.ga/api/playlists/${playlist}/tracks?key=flat_eric`, {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ tracks: tracks })
-            })
-            .then((response) => response.json())
-            .then((playlist) => {
-                console.log('new', playlist)
-            });
-    }
 };
 
 
@@ -863,7 +863,7 @@ const View = {
     addTrackToPlaylist(song) {
         selectTrack = song.trackId;
         Controller.registerTrackToPlaylistClickHandler();
-
+        return selectTrack;
     },
 
     displayAlbumList(albums) {
@@ -977,14 +977,17 @@ const View = {
     },
 
 
-    registerAlbumIdandArtistId(album) {
-        let artistId = album.artists;
-            selectedArtist = album.artistId;
-            selectedAlbum = album.id;
-
-            View.displayChosenAlbum(album);
-
-            Controller.registerTrackTitleToAlbumClickHandler(artistId);
+    registerAlbumIdandArtistId(clickOnAlbumButton) {
+        for(artist of clickOnAlbumButton.artistId){
+                selectedArtist = artist._id;
+            for(album of artist.albums){
+                selectedAlbum = album;
+            }
+                
+            Controller.registerTrackTitleToAlbumClickHandler();
+        }
+            
+            View.displayChosenAlbum(clickOnAlbumButton);            
     },
 
     showAllplaylists: document.getElementById("showAllplaylists"),
@@ -1015,10 +1018,11 @@ const View = {
 
         for (let playlist of playlists) {
             const playlistContainer = document.getElementById('playlistContainer');
-            const searchPlaylist = document.getElementById('playlistlist');
+            const searchPlaylist = document.getElementById('playlist');
             const ul = document.getElementById('playlistList');
             const li = document.createElement('li');
             li.style = 'margin-bottom:5px';
+            li.style = 'display: none; margin-bottom:5px';
             li.innerText = playlist.title;
 
             let inputChangePlaylistTitle = document.createElement('input');
@@ -1093,11 +1097,9 @@ const View = {
             clickOnPlaylist.dataset.id = playlist._id;
             clickOnPlaylist.innerText = '+';
             clickOnPlaylist.createdBy = playlist.createdBy;
-            clickOnPlaylist.trackId = selectTrack;
 
             clickOnPlaylist.addEventListener('click', function() {
                 this.id;
-                this.trackId;
                 this.dataset.id;
                 this.innerText;
                 Controller.registerTrackIdandPlaylistId(this);
@@ -1127,22 +1129,16 @@ const View = {
                 FetchModel.fetchCommentsforSpecificPlaylist(this);
             });
 
-
             function renderHtmlSinglePlaylist() {
-                singlePlaylistContainer.innerHTML = `
+                 singlePlaylistContainer.innerHTML = `
                             <h4>Tracks</h4>
-                            `;     
+                            `;    
                 for (let track of playlist.tracks) {
-                     
-                    for (let artist of track.artists) {
-
                         singlePlaylistContainer.innerHTML += `
                                 
-                            <li>${artist.name} - ${track.title}</li>
+                            <li>${track.title}</li>
                                 `;
-                    }
                 }
-                
                 singlePlaylistAction.style.display = "none";
 
                 editPlaylistButton.addEventListener('click', function() {

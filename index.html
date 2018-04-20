@@ -91,21 +91,24 @@
         </div>
         <div class="addPlaylist" id="addPlayList">
             <h3>Create Playlist</h3>
+	             <div id="createPlaylistErrorMsg">
+	                <p id="errorTextMsg"><p>
+	            </div>
+
             <label for="searchTrack">Choose track</label>
             <input type="text" id="myInput2" name="searchTrack" placeholder="Search track name" title="Search artist name">
             <div id="tracks">
                 <ul id="tracklist"></ul>
             </div>
 
+			<h3 id="trackHeading"></h3>
+
             <label for="searchPlaylist">Choose playlist</label>
             <input type="text" id="myInput3" name="searchPlaylist" placeholder="Search playlist name" title="Search artist name">
-             <div id="playlistlist">
+             <div id="playlist">
                 <ul id="playlistList"></ul>
             </div>
-            <div id="createPlaylistErrorMsg">
-                <p id="errorTextMsg"><p>
-            </div>
-            <h3 id="trackHeading"></h3>
+
             <label for="createPlaylist">Or Create new playlist</label>
             <input type="text" id="createdPlaylist" name="createPlaylist" placeholder="Title of the playlist">
             <label for="createdBy">Your name</label>

@@ -117,7 +117,7 @@ input[type=text]:focus {
     padding: 10px 25px;
 }
 
-input[type=submit], #albumButton, #trackButton, #playlistButton, .ratingButton, .inputCommentButton  {
+input[type=submit], #albumButton, #trackButton, #playlistButton, .ratingButton, .inputCommentButton {
     color: #007884;
     font-weight: 500;
     background-color: transparent;
@@ -287,9 +287,9 @@ input[type=submit], #albumButton, #trackButton, #playlistButton, .ratingButton, 
     display: none;
 }
 
-#playlistList li {
-    display: none;
-}
+//#playlistList li {
+    //display: none;
+//}
 
 table {
     width: 100%;
