@@ -5,8 +5,8 @@ A school project about an application for an API for [Musikinstitutet](https://f
 A team set together by destiny to concure API at Medieinstitute.
 
 ## Links
-* [Github pages](#) - To our github page
-* [Github repo](#) - Our repository
+* [Github pages](#) - To our github page https://github.com/cattapr/Musikinstitutet-/tree/gh-pages
+* [Github repo](#) - Our repository https://github.com/cattapr/Musikinstitutet-
 
 ## Built with
 * HTML/CSS
